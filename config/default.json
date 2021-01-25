@@ -1,0 +1,5 @@
+{
+  "port": 8080,
+  "mongoURL": "mongodb+srv://anton:1214@users.s0ttb.mongodb.net/app?retryWrites=true&w=majority",
+  "jwtSecret": "anton-masha"  
+}
