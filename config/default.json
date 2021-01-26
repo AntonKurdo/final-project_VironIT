@@ -1,5 +1,8 @@
 {
-  "port": 8080,
+  "port": 5000,
   "mongoURL": "mongodb+srv://anton:1214@users.s0ttb.mongodb.net/app?retryWrites=true&w=majority",
-  "jwtSecret": "anton-masha"  
+  "jwtSecret": "anton-masha",
+  "GOOGLE_CLIENT_ID": "632259900656-shol0f2epfln77sh9eg9f14cg74hues0.apps.googleusercontent.com",
+  "GOOGLE_CLIENT_SECRET": "RDH_8fj2DWUGqbNPrvvx85vQ"
+
 }

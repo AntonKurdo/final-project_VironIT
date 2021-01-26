@@ -3,13 +3,25 @@ const config = require('config');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+
+const passport = require('passport');
 const authRouter = require('./routers/auth.router');
+require('./passport.setup.js');
+
 
 const app = express();
 const PORT = config.get('port') || 3000;
 
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(bodyParser.json());
 app.use('/', authRouter);
+
+// app.use(cookieSession({
+//   name: 'session',
+//   keys: ['key1', 'key2']
+// }))
+
 
 async function startApp() {
   try {

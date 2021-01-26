@@ -17,6 +17,9 @@ private service
   login = async (req: Request, res: Response) => {
     res.send(await this.service.login(req.body))
   }
+  profile = (req: Request, res: Response) => {
+    res.send('Profile page')
+  }
 };
 
 module.exports = AuthController;
