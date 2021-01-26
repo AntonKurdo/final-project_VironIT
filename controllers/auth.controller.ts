@@ -1,12 +1,10 @@
 import { Response, Request } from "express";
 
 export {};
-
 const AuthService = require('../services/auth.service');
 
-
 class AuthController {
-private service
+ service: any
   constructor() {    
     this.service = new AuthService();
   }
