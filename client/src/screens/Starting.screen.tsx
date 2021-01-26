@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around'  
   },
   btn: {  
     width: THEME.BTN_WIDTH,
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: THEME.MAIN_NAV_COLOR
+    backgroundColor: THEME.MAIN_COLOR
   },
   btnText: {
     fontSize: 20,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 30,
-    color: THEME.MAIN_NAV_COLOR,
+    color: THEME.MAIN_COLOR,
     fontWeight: 'bold',
   },
   subtitle: {

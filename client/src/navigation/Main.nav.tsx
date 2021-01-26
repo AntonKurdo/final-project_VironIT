@@ -9,7 +9,7 @@ import {THEME} from './../../theme';
 
 const routesStyling = {
     headerStyle: {
-        backgroundColor: THEME.MAIN_NAV_COLOR
+        backgroundColor: THEME.MAIN_COLOR
     },
     headerTintColor: '#fff'
 };
