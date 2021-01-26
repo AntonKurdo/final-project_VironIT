@@ -13,10 +13,12 @@ const StartingScreen: FC = () => {
       </View>     
       <Image style={styles.img} source={require('../../assets/logo.png')}/>
       <View>
-          <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Sign Up')}>
+          <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.btnText}>Log In</Text>
+          </TouchableOpacity> 
+          <TouchableOpacity style={{...styles.btn, marginTop: 10}} onPress={() => navigation.navigate('Sign Up')}>
             <Text style={styles.btnText}>Sign Up</Text>
-          </TouchableOpacity>        
-       
+          </TouchableOpacity>         
       </View>
       <Text style={styles.author}>© Created by Anton Kurdo</Text>
     </View>
@@ -27,7 +29,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-around'  
+    justifyContent: 'space-around',
+    backgroundColor: '#fff'
   },
   btn: {  
     width: THEME.BTN_WIDTH,
