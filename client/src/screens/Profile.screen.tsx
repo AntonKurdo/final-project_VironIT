@@ -1,10 +1,18 @@
+import React, {FC, useEffect} from 'react';
+import {io} from "socket.io-client";
 import { useNavigation } from '@react-navigation/native';
-import React, {FC} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { THEME } from './../../theme';
 
 const ProfileScreen: FC = () => {
+  const socket = io('http://192.168.100.2:5000');
+  
+  useEffect(() => {  
+    socket.on('chat message', (msg: string) => {
+      console.log(msg)
+    })  
+  }, [])
 
   const navigation = useNavigation();
 
@@ -16,6 +24,9 @@ const ProfileScreen: FC = () => {
       <Text>ProfileScreen</Text>
       <TouchableOpacity style={styles.btn} onPress={logoutHandler}>
         <Text style={styles.btnText}>Log Out</Text>
+      </TouchableOpacity> 
+      <TouchableOpacity style={styles.btn} onPress={() => {socket.emit('chat message', 'Hello, I am working socket!!!')}}>
+        <Text style={styles.btnText}>Socket Test</Text>
       </TouchableOpacity> 
     </View>
   )

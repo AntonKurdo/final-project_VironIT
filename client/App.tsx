@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet, Text, View } from 'react-native';
 import MainNavigator from './src/navigation/Main.nav';
 
-
-export default function App() {
+export default function App (){
   return (   
       <NavigationContainer>
            <MainNavigator />

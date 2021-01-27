@@ -1,4 +1,6 @@
-const express = require('express');
+const app = require('express')();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 const config = require('config');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
@@ -7,8 +9,8 @@ const passport = require('passport');
 const authRouter = require('./routers/auth.router');
 require('./passport.setup');
 
-const app = express();
-const PORT = config.get('port') || 3000;
+
+const PORT = process.env.PORT || config.get('port');
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -21,10 +23,21 @@ async function startApp() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true
+    });  
+    
+    io.on("connection", (socket: any) => {
+      console.log("a user connected :D");
+      socket.on("chat message", (msg: string) => {
+        console.log(msg);
+        io.emit("chat message", msg);
+      });
     });
-    app.listen(PORT, () => console.log(chalk.blue(`Server has been started on port ${PORT}...`)));
+
+    http.listen(PORT, () => console.log(chalk.blue(`Server has been started on port ${PORT}...`)));
+
+  
   } catch(err) {
-    console.log(chalk.red('Server Error: ' + err.message));
+    console.log(chalk.blue('Server Error: ' + err.message));
     process.exit();    
   }
 }
