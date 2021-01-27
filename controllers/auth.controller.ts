@@ -15,8 +15,8 @@ class AuthController {
   login = async (req: Request, res: Response) => {
     res.send(await this.service.login(req.body))
   }
-  profile = (req: Request, res: Response) => {
-    res.send('Profile page')
+  authGoogle = async (req: Request, res: Response) => {
+    res.send(await this.service.authGoogle(req.body))
   }
 };
 

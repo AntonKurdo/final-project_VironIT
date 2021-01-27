@@ -1,5 +1,7 @@
-import {Alert} from 'react-native';
+import {Alert, Linking} from 'react-native';
 import { storeTokenInfo } from './asyncStorage.service';
+import * as Google from 'expo-google-app-auth';
+
 
 interface iData {
     email : string,
@@ -50,6 +52,37 @@ class Http {
       } 
       // storeTokenInfo(json);
       return true;  
+    }  
+
+    signUpWithGoogle = async (): Promise<boolean | undefined> => {
+        try {
+            const result = await Google.logInAsync({
+              androidClientId: '632259900656-kbrjfnl7magoi8r7c216fst9iitnpbrb.apps.googleusercontent.com',     
+              iosClientId: '632259900656-3k3km1j7r826meo0hb8mdtpbpurukke6.apps.googleusercontent.com' ,   
+              scopes: ['profile', 'email'],
+            });        
+            if (result.type === 'success') {
+              const res = await fetch(`${this.URL}/auth/google`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    email: result.user.email
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+              })   
+              const json = await res.json();
+              if(json.message) {
+                Alert.alert('Error', json.message)
+                return false;
+              } 
+              return true;              
+            } else {              
+              return false;
+            }          
+          } catch (e) {
+            console.log(e)
+          }
     }
 }
 

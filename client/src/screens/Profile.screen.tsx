@@ -8,10 +8,11 @@ import { THEME } from './../../theme';
 const ProfileScreen: FC = () => {
   const socket = io('http://192.168.100.2:5000');
   
-  useEffect(() => {  
+  useEffect((): () => void => {  
     socket.on('chat message', (msg: string) => {
       console.log(msg)
     })  
+    return () => socket.off('chat message')
   }, [])
 
   const navigation = useNavigation();

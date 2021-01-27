@@ -5,15 +5,10 @@ const config = require('config');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const passport = require('passport');
 const authRouter = require('./routers/auth.router');
-require('./passport.setup');
-
 
 const PORT = process.env.PORT || config.get('port');
 
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(bodyParser.json());
 app.use('/', authRouter);
 

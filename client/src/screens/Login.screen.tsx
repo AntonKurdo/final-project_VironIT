@@ -1,10 +1,9 @@
-import React, {FC, useState} from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator} from 'react-native';
-import { THEME } from '../../theme';
-import { MaterialIcons } from '@expo/vector-icons';
+import React, {FC, useState, useEffect} from 'react';
+import {StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, Linking} from 'react-native';
+import { MaterialIcons  } from '@expo/vector-icons';
 import httpService from '../services/http.service';
 import { useNavigation } from '@react-navigation/native';
-
+import { THEME } from './../../theme';
 
 
 const LoginScreen: FC = () => {
@@ -63,7 +62,21 @@ const LoginScreen: FC = () => {
       </TouchableOpacity>  
       <TouchableOpacity style={styles.underBtn} activeOpacity={.9}>
         <Text style={styles.underText} > New here? <Text onPress={() => navigation.navigate('Sign Up')} style={{...styles.underText, textDecorationLine: "underline", textDecorationStyle: "solid"}}>Sign Up instead</Text> </Text>         
-      </TouchableOpacity>      
+      </TouchableOpacity>   
+      <Text style={styles.or}> or </Text>   
+      <View style={styles.googleBtnCont}>
+        <Text style={styles.googleSign}> Log In with Google</Text>
+        <TouchableOpacity style={styles.googleBtn} onPress={async () => {
+          setLoading(true);
+          const result = await httpService.signUpWithGoogle();
+          if(result) {
+            navigation.navigate('Profile')
+          }
+          setLoading(false);
+        }}>     
+          <Image style={{width: 50, height: 50}} source={require('../../assets/googleIcon.png')} />
+        </TouchableOpacity>
+      </View>    
     </View>
   )
 };
@@ -120,10 +133,29 @@ const styles = StyleSheet.create({
   underText: {
     fontSize: 16,  
     fontStyle: 'italic',
+    color: THEME.MAIN_COLOR    
+  },
+  or: {
+    alignSelf: 'center',
+    marginVertical: 15,
+    fontSize: 20,
+    color: THEME.MAIN_COLOR
+  },
+  googleBtnCont: {
+    alignSelf: 'center', 
+    flexDirection: 'row', 
+    alignItems: 'center'
+  },
+  googleSign: {
+    fontSize: 12,
     color: THEME.MAIN_COLOR,
-    
+    textDecorationLine: "underline", 
+    textDecorationStyle: "solid"
+  },
+  googleBtn: {
+    alignSelf: 'center',  
+    borderColor: THEME.MAIN_COLOR
   }
-})
-
+});
 
 export default LoginScreen;

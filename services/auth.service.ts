@@ -11,6 +11,10 @@ type AuthBodyT = {
   password: string
 }
 
+type CheckingDataT = {
+  email: string
+}
+
 class AuthService {
   auth = async(body: AuthBodyT) => {
     try{
@@ -58,6 +62,19 @@ class AuthService {
     } catch(e) {
       console.log(e.message)
       return {message: 'Something went wrong, try again!'}
+    }
+  }
+
+  authGoogle = async (data: CheckingDataT) => {
+    try {
+      const { email } = data;
+      const user = await User.findOne({email});
+      if(user) {
+         return user
+      }
+      return {message: 'You are not registred...'}     
+    } catch(e) {
+      console.log(e)
     }
   }
 }
