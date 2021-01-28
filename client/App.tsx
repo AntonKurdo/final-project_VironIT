@@ -1,14 +1,13 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, {FC} from 'react';
 import MainNavigator from './src/navigation/Main.nav';
+import {AppState} from './src/context/State'
 
-const App = () => {
-  return (   
-      <NavigationContainer>
-           <MainNavigator />
-      </NavigationContainer>     
-  );
+const App: FC = () => {
+    return (
+        <AppState >
+            <MainNavigator/>
+        </AppState>
+    );
 };
 
 export default App;
-

@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
+import { useAppContext } from '../context/context';
 
 const SettingsScreen = () => {
   return (

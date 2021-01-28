@@ -6,11 +6,13 @@ const chalk = require('chalk');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const authRouter = require('./routers/auth.router');
+const postRouter = require('./routers/posts.router');
 
 const PORT = process.env.PORT || config.get('port');
 
 app.use(bodyParser.json());
 app.use('/', authRouter);
+app.use('/posts', postRouter);
 
 async function startApp() {
   try {

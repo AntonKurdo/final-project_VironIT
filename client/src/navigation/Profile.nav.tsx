@@ -1,14 +1,18 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons  } from '@expo/vector-icons';
+
 // SCREENS
 import ProfileScreen from '../screens/Profile.screen';
 import SettingsScreen from './../screens/Settings.screen';
+
 import { THEME } from './../../theme';
+import PostNavigator from './Posts.nav';
 
 const Tab = createBottomTabNavigator();
 
 function ProfileTabNav() {
+
   return (
     <Tab.Navigator
       tabBarOptions = {
@@ -26,7 +30,16 @@ function ProfileTabNav() {
            <AntDesign name="profile" size={30} color={color} />
           )                  
         }}
-      />
+      />     
+         <Tab.Screen 
+        name="Posts" 
+        component={PostNavigator}
+        options={{                     
+          tabBarIcon: ({color}) => (        
+            <MaterialCommunityIcons  name="post" size={30} color={color} />
+          )                  
+        }}
+      />   
       <Tab.Screen 
         name="Settings" 
         component={SettingsScreen} 
@@ -36,6 +49,7 @@ function ProfileTabNav() {
           )                  
         }}
       />
+   
     </Tab.Navigator>
   );
 };

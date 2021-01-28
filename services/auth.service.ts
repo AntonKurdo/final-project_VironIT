@@ -55,9 +55,10 @@ class AuthService {
       const accessToken = jwt.sign({userId: user.id}, config.get('jwtSecret') , {expiresIn: '1h'});
       const refreshToken = jwt.sign({userId: user.id}, config.get('jwtSecret'), {expiresIn: '24h'})
       return {
+        email: user.email,        
+        userId: user.id,
         'accessToken': accessToken, 
         'refreshToken': refreshToken,
-        userId: user.id
       }
     } catch(e) {
       console.log(e.message)

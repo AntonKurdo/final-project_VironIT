@@ -1,12 +1,20 @@
-import {Alert, Linking} from 'react-native';
+import { Alert } from 'react-native';
 import { storeTokenInfo } from './asyncStorage.service';
 import * as Google from 'expo-google-app-auth';
-
+import { iUserData } from '../context/context';
 
 interface iData {
     email : string,
     password : string
 };
+
+interface iNewPost {
+  title: string,
+  owner: string,
+  text: string,
+  picture?: string,
+  video?: string 
+}
 
 class Http {
     private URL = 'http://192.168.100.2:5000';
@@ -34,7 +42,7 @@ class Http {
         }
     }
 
-    logIn = async (data: iData): Promise<boolean> => {
+    logIn = async (data: iData): Promise<boolean | iUserData> =>  {
       const res = await fetch(`${this.URL}/login`, {
         method: 'POST',
         body: JSON.stringify({
@@ -50,11 +58,11 @@ class Http {
         Alert.alert('Error', json.message)
         return false;
       } 
-      // storeTokenInfo(json);
-      return true;  
+      // storeTokenInfo(json);    
+      return {email: json.email, id: json.userId};  
     }  
 
-    signUpWithGoogle = async (): Promise<boolean | undefined> => {
+    signUpWithGoogle = async (): Promise<boolean | iUserData | undefined> => {
         try {
             const result = await Google.logInAsync({
               androidClientId: '632259900656-kbrjfnl7magoi8r7c216fst9iitnpbrb.apps.googleusercontent.com',     
@@ -71,18 +79,46 @@ class Http {
                     'Content-Type': 'application/json'
                 }
               })   
-              const json = await res.json();
+              const json = await res.json();              
               if(json.message) {
                 Alert.alert('Error', json.message)
                 return false;
               } 
-              return true;              
+              
+              return {email: json.email, id: json._id};             
             } else {              
               return false;
             }          
           } catch (e) {
             console.log(e)
           }
+    }
+
+    getAllUserPostsById = async (id: string) => {
+      const res = await fetch(`${this.URL}/posts/${id}`);
+      const posts = await res.json();
+      return posts;
+    }
+
+
+    addNewPost = async (post: iNewPost): Promise<boolean> => {
+     try {
+      const res = await fetch(`${this.URL}/posts`, {
+        method: 'POST',
+        body: JSON.stringify(post),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        
+      });   
+      if(res) {
+         return true;
+      }   
+      return false;
+     } catch(e) {       
+       console.log(e);
+       return false;
+     }
     }
 }
 

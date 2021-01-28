@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import {StyleSheet, View, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { THEME } from './../../theme';
+import { useAppContext } from '../context/context';
 
 const ProfileScreen: FC = () => {
   const socket = io('http://192.168.100.2:5000');
@@ -15,10 +16,14 @@ const ProfileScreen: FC = () => {
     return () => socket.off('chat message')
   }, [])
 
-  const navigation = useNavigation();
+  const navigation = useNavigation(); 
+  
+  const {clearActiveUserInfo, clearUserPosts} = useAppContext();
 
   const logoutHandler = () => {
-    navigation.navigate('Home');
+    navigation.navigate('Home'); 
+    clearActiveUserInfo && clearActiveUserInfo(); 
+    clearUserPosts && clearUserPosts();
   }
   return (
     <View style={styles.default}>    
@@ -28,7 +33,7 @@ const ProfileScreen: FC = () => {
       </TouchableOpacity> 
       <TouchableOpacity style={styles.btn} onPress={() => {socket.emit('chat message', 'Hello, I am working socket!!!')}}>
         <Text style={styles.btnText}>Socket Test</Text>
-      </TouchableOpacity> 
+      </TouchableOpacity>      
     </View>
   )
 };

@@ -1,9 +1,10 @@
-import React, {FC, useState, useEffect} from 'react';
+import React, { FC, useState } from 'react';
 import {StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, Linking} from 'react-native';
 import { MaterialIcons  } from '@expo/vector-icons';
 import httpService from '../services/http.service';
 import { useNavigation } from '@react-navigation/native';
 import { THEME } from './../../theme';
+import { useAppContext } from '../context/context';
 
 
 const LoginScreen: FC = () => {
@@ -14,6 +15,7 @@ const LoginScreen: FC = () => {
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+  const {setActiveUserInfo, getUserPosts} = useAppContext();
 
   if(loading) {
     return (
@@ -50,11 +52,16 @@ const LoginScreen: FC = () => {
       </View>  
       <TouchableOpacity style={styles.btn} onPress={async () => {
         setLoading(true);
-        const result = await httpService.logIn({email, password})
+        const result = await httpService.logIn({email, password});
         setEmail('');
         setPassword('');
-        setLoading(false);
-        if(result) {
+        setLoading(false);              
+        if(typeof result !== 'boolean' && setActiveUserInfo) {              
+          await setActiveUserInfo(result);
+          const posts = await httpService.getAllUserPostsById(result.id);
+          if(getUserPosts) {
+            getUserPosts(posts);
+          }         
           navigation.navigate('Profile');
         }
       }}>
@@ -68,9 +75,12 @@ const LoginScreen: FC = () => {
         <Text style={styles.googleSign}> Log In with Google</Text>
         <TouchableOpacity style={styles.googleBtn} onPress={async () => {
           setLoading(true);
-          const result = await httpService.signUpWithGoogle();
-          if(result) {
-            navigation.navigate('Profile')
+          const result = await httpService.signUpWithGoogle();          
+          if(typeof result !== 'boolean' && setActiveUserInfo && result) {              
+            await setActiveUserInfo(result);
+            const posts = await httpService.getAllUserPostsById(result.id);           
+            getUserPosts && getUserPosts(posts);                     
+            navigation.navigate('Profile');
           }
           setLoading(false);
         }}>     
