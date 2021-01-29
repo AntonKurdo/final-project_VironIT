@@ -6,15 +6,14 @@ export interface iUserData{
   email: string
 }
 
-
-
 type iContext = {
     activeUserInfo?: any
     posts?: Array<iPost>,
     setActiveUserInfo?: (userData: iUserData) => void
-    getUserPosts?: (posts: any) => void,
+    getUserPosts?: (posts: Array<iPost>) => void,
     clearActiveUserInfo?: () => void,
-    clearUserPosts?: () => void  
+    clearUserPosts?: () => void,
+    likePostById?: (id: string) => void
 };
 
 

@@ -4,7 +4,7 @@ import { Response, Request } from "express";
 const PostsService = require('../services/posts.service');
 
 class PostsController {
-  service: any;
+  private service: any;
 
   constructor() {
     this.service = new PostsService();
@@ -18,6 +18,9 @@ class PostsController {
     res.send(await this.service.addNewPost(req.body))
   }
 
+  likePostById = async (req: Request, res: Response) => {
+    res.send(await this.service.likePostById(req.params.id))
+  }
 }
 
 module.exports = PostsController;

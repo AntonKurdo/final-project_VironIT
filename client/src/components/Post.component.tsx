@@ -1,91 +1,122 @@
-import React, {FC} from 'react';
-import {StyleSheet, View, ImageBackground, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { Dimensions } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-
+import React, {FC, useState} from 'react';
+import {
+    StyleSheet,
+    View,
+    ImageBackground,
+    Text,
+    ScrollView,
+    TouchableOpacity
+} from 'react-native';
+import {Dimensions} from 'react-native';
+import {AntDesign} from '@expo/vector-icons';
+import httpService from '../services/http.service';
+import { useAppContext } from '../context/context';
 
 export interface iPost {
-  _id?: string,
-  date: Date,
-  likes: number,
-  isFavourite: boolean,
-  title: string,
-  text: string,
-  picture: string,
-  owner: string
+    _id : string,
+    date : Date,
+    likes : number,
+    isFavourite : boolean,
+    title : string,
+    text : string,
+    picture : string,
+    owner : string
 }
 
 interface props {
-  post: iPost
+    post : iPost
 }
 
-export const PostComponent : FC<props> = ({post}) => {
+export const PostComponent : FC < props > = ({post}) => {
+
+  const {likePostById} = useAppContext();
+
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+
+    const likeHandler = async (id : string) => {      
+        setIsBtnDisabled(true);
+        const res = await httpService.likePostById(id);
+        if(res) {
+          likePostById && likePostById(id);
+          setIsBtnDisabled(false);
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <ImageBackground source={{uri: post.picture}} style={styles.image}>
-              <View style={styles.wrapperTitle}>
-                 <Text style={styles.text}>{post.title}</Text>
-                 <Text style={styles.likesNumber}>{post.likes}</Text>
-                 <TouchableOpacity style={styles.btnLike}>
-                   {
-                     post.isFavourite 
-                       ? <AntDesign name="heart" size={24} color='#fff' />
-                       : <AntDesign name="hearto" size={24} color='#fff' />
-                   }                    
-                 </TouchableOpacity>
-              </View>               
-              <ScrollView style={styles.wrapperBody}>                 
-                  <Text style={styles.bodyText}>{post.text}</Text>
-              </ScrollView>               
+            <ImageBackground
+                source={{
+                uri: post.picture
+            }}
+                style={styles.image}>
+                <View style={styles.wrapperTitle}>
+                    <Text style={styles.text}>{post.title}</Text>
+                    <Text style={styles.likesNumber}>{post.likes}</Text>
+                    <TouchableOpacity
+                        disabled={isBtnDisabled}
+                        style={styles.btnLike}
+                        onPress={likeHandler.bind(null, post._id)}>
+                        {post.isFavourite
+                            ? <AntDesign name="heart" size={24} color='#fff'/>
+                            : <AntDesign name="hearto" size={24} color='#fff'/>
+}
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={styles.wrapperBody}>
+                    <Text style={styles.bodyText}>{post.text}</Text>
+                </ScrollView>
             </ImageBackground>
         </View>
     )
 };
 
 const styles = StyleSheet.create({
-    container: {       
+    container: {
         height: 270,
         marginVertical: 5,
         marginHorizontal: 5
-         
+
     },
     image: {
-      flex: 1,
-      resizeMode: "contain",
-      justifyContent: 'space-between'
+        flex: 1,
+        resizeMode: "contain",
+        justifyContent: 'space-between'
     },
     wrapperTitle: {
-      width: Dimensions.get('screen').width - 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: 50,
-      backgroundColor: 'rgba(0,0,0,0.4)',         
+        width: Dimensions
+            .get('screen')
+            .width - 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 50,
+        backgroundColor: 'rgba(0,0,0,0.4)'
     },
-    text: { 
-      fontSize: 20,
-      color: '#fff'  
+    text: {
+        fontSize: 20,
+        color: '#fff'
     },
     wrapperBody: {
-      width: Dimensions.get('screen').width - 10,      
-      height: 50,
-      backgroundColor: 'rgba(0,0,0,0.4)'     
+        width: Dimensions
+            .get('screen')
+            .width - 10,
+        height: 50,
+        backgroundColor: 'rgba(0,0,0,0.4)'
     },
     bodyText: {
-      alignSelf: 'center',
-      fontSize: 15,
-      color: '#fff',
-      width: '90%',
-      overflow: 'scroll'
+        alignSelf: 'center',
+        fontSize: 15,
+        color: '#fff',
+        width: '90%',
+        overflow: 'scroll'
     },
     btnLike: {
-      position: 'absolute',
-      right: 15
+        position: 'absolute',
+        right: 15
     },
     likesNumber: {
-      position: 'absolute',
-      right: 45,
-      color: '#fff',
-      fontSize: 20
+        position: 'absolute',
+        right: 45,
+        color: '#fff',
+        fontSize: 20
     }
-
 })
