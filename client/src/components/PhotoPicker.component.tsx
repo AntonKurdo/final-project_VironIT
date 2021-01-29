@@ -3,6 +3,7 @@ import { StyleSheet, View, Alert, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as MediaLibrary from 'expo-media-library';
 
 import { THEME } from './../../theme';
 
@@ -14,7 +15,7 @@ interface iPhotoPickerProps {
 async function askForPermissions() {
   const { status } = await Permissions.askAsync(
     Permissions.CAMERA,
-    Permissions.MEDIA_LIBRARY  
+    Permissions.MEDIA_LIBRARY 
   );
   if(status !== 'granted') {
     Alert.alert('Error', 'You have not given the rights to create the photo...');
@@ -36,10 +37,12 @@ export const PhotoPicker: FC<iPhotoPickerProps> = ({setPictureHandler}) => {
       quality: 0.7,
       allowsEditing: false,
       aspect: [16, 9],
-      videoMaxDuration: 17
+      videoMaxDuration: 17 
     })
+  
     if(!img.cancelled) {
-      setPictureHandler(img.uri)
+      const asset = await MediaLibrary.createAssetAsync(img.uri);      
+      setPictureHandler(asset.uri)
     }    
     
   }

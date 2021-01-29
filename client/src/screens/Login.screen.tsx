@@ -54,8 +54,7 @@ const LoginScreen: FC = () => {
         setLoading(true);
         const result = await httpService.logIn({email, password});
         setEmail('');
-        setPassword('');
-        setLoading(false);              
+        setPassword('');                  
         if(typeof result !== 'boolean' && setActiveUserInfo) {              
           await setActiveUserInfo(result);
           const posts = await httpService.getAllUserPostsById(result.id);
@@ -63,6 +62,9 @@ const LoginScreen: FC = () => {
             getUserPosts(posts);
           }         
           navigation.navigate('Profile');
+          setLoading(false);    
+        } else {
+          setLoading(false);
         }
       }}>
         <Text style={styles.btnText}>Log In</Text>
@@ -81,8 +83,11 @@ const LoginScreen: FC = () => {
             const posts = await httpService.getAllUserPostsById(result.id);           
             getUserPosts && getUserPosts(posts);                     
             navigation.navigate('Profile');
+            setLoading(false);           
+          } else {
+            setLoading(false);
           }
-          setLoading(false);
+        
         }}>     
           <Image style={{width: 50, height: 50}} source={require('../../assets/googleIcon.png')} />
         </TouchableOpacity>

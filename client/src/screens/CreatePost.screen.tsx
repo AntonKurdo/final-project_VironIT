@@ -19,14 +19,15 @@ const CreatePostScreen : FC = () => {
     const [picture,
         setPicture] = useState('');
     // const [video, setVideo] = useState('');
-
+    const [isBtnDisabled, setIsBtnDisabled] = useState(false);   
     const setPictureHandler = (uri : string) => {
         setPicture(uri);
     };
     const {activeUserInfo, getUserPosts} = useAppContext();
 
-    const addNewPostHandler = async () => {
+    const addNewPostHandler = async () => {       
         if (text && title && picture)  {
+            setIsBtnDisabled(true);            
             const isPosted = await httpService.addNewPost({title, text, picture, owner: activeUserInfo.id});
             if(isPosted) {       
                 getUserPosts && getUserPosts(await httpService.getAllUserPostsById(activeUserInfo.id)) 
@@ -36,6 +37,7 @@ const CreatePostScreen : FC = () => {
                 setPicture('');
                 navigation.navigate('Posts');
             }
+            setIsBtnDisabled(false);
         } else {
             Alert.alert('Error', 'To create new post you need add post title, text and post photo or video...')
         }
@@ -75,7 +77,7 @@ const CreatePostScreen : FC = () => {
                     )
                     : <Image source={require('../../assets/image-template.jpg')} style={styles.pic} />                
             }
-            <TouchableOpacity style={styles.createBtn} onPress={addNewPostHandler}>
+            <TouchableOpacity style={styles.createBtn} disabled={isBtnDisabled} onPress={addNewPostHandler}>
                 <Text style={styles.btnText}>Create Post</Text>
             </TouchableOpacity>
             </View>
@@ -123,7 +125,8 @@ const styles = StyleSheet.create({
     picCont: {
         width: '80%',
         height: 200,
-        marginTop: 20
+        marginTop: 20,
+        resizeMode: 'contain'
     },
     pic: {
         width: '100%',
