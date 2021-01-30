@@ -3,3 +3,7 @@ export const CLEAR_ACTIVE_USER_INFO = 'CLEAR_ACTIVE_USER_INFO';
 export const GET_USER_POSTS = 'GET_USER_POSTS';
 export const CLEAR_USER_POSTS = 'CLEAR_USER_POSTS';
 export const LIKE_POST_BY_ID = 'LIKE_POST_BY_ID';
+export const SET_ALL_USERS = 'SET_ALL_USERS';
+export const CLEAR_ALL_USERS = 'CLEAR_ALL_USER';
+export const SET_USER_FRIENDS = 'SET_USER_FRIENDS';
+export const ADD_FRIEND = 'ADD_FRIEND';

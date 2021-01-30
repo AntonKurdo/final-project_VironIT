@@ -10,8 +10,7 @@ module.exports = (req: Request, res: Response, next: NextFunction) => {
             .headers
             .authorization
             .split(' ')[1];           
-        const decoded = jwt.verify(token, config.get('jwtSecret'));      
-        console.log(decoded);       
+        const decoded = jwt.verify(token, config.get('jwtSecret'));         
         next();
       } else {
         res

@@ -1,7 +1,7 @@
 import React, {FC,useReducer} from 'react';
-import Context, { iUserData } from './context';
+import Context, { iUserData, iUser } from './context';
 import {reducer} from './reducer';
-import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID } from './types';
+import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND } from './types';
 import { iPost } from './../components/Post.component';
 
 export const AppState: FC = ({children}) => {
@@ -12,8 +12,10 @@ export const AppState: FC = ({children}) => {
        email: '',
        firstName: '',
        lastName: '',
-       avatar: ''
-     },
+       avatar: ''       
+     },    
+     friends: [], 
+     allUsers: [],
      userPosts: []   
   };
 
@@ -24,15 +26,25 @@ export const AppState: FC = ({children}) => {
     const setActiveUserInfo = (data: iUserData) => dispatch({type: SET_ACTIVE_USER_INFO, data});
     const clearActiveUserInfo = () => dispatch({type: CLEAR_ACTIVE_USER_INFO});
     const likePostById = (id: string) => dispatch({type: LIKE_POST_BY_ID, id});
+    const setAllUsers = (allUsers: Array<iUser>) => dispatch({type: SET_ALL_USERS, allUsers});    
+    const clearAllUsers = () => dispatch({type: CLEAR_ALL_USERS});
+    const setUserFriends = (friends: Array<iUser>) => dispatch({type: SET_USER_FRIENDS, friends})
+    const addFriend = (friend: iUser) => dispatch({type: ADD_FRIEND, friend})
   
     return <Context.Provider
         value={{
           activeUserInfo: state.activeUserInfo,
           posts: state.userPosts,
+          allUsers: state.allUsers,
+          friends: state.friends,
           setActiveUserInfo,
           getUserPosts,
           clearActiveUserInfo,
           clearUserPosts,
-          likePostById         
+          likePostById,
+          setAllUsers,
+          clearAllUsers,
+          setUserFriends,
+          addFriend   
     }}>{children}</Context.Provider>
 };

@@ -27,7 +27,7 @@ const Stack = createStackNavigator();
 
 function MainNavigator() {
 
-    const {clearActiveUserInfo, clearUserPosts} = useAppContext();
+    const {clearActiveUserInfo, clearUserPosts, clearAllUsers} = useAppContext();
 
     const logout = (nav: any) => {
         Alert.alert(
@@ -38,6 +38,7 @@ function MainNavigator() {
                 nav.navigate('Home'); 
                 clearActiveUserInfo && clearActiveUserInfo(); 
                 clearUserPosts && clearUserPosts();
+                clearAllUsers && clearAllUsers();
                 await removeTokenInfo();
               }},
               {

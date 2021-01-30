@@ -9,14 +9,27 @@ export interface iUserData{
   lastName: string
 }
 
+export interface iUser {
+  id: string,
+  firstName: string,
+  lastName: string,
+  avatar: string
+}
+
 type iContext = {
     activeUserInfo?: any
     posts?: Array<iPost>,
+    allUsers?: Array<iUser>,
+    friends?: Array<iUser>,
     setActiveUserInfo?: (userData: iUserData) => void
     getUserPosts?: (posts: Array<iPost>) => void,
     clearActiveUserInfo?: () => void,
     clearUserPosts?: () => void,
-    likePostById?: (id: string) => void
+    likePostById?: (id: string) => void,
+    setAllUsers?: (users: Array<iUser>) => void,
+    clearAllUsers?: () => void,
+    setUserFriends?: (friends: Array<iUser>) => void,
+    addFriend?: (friend: iUser) => void
 };
 
 

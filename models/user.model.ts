@@ -7,7 +7,8 @@ const schm = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true }, 
   avatar: {type: String, default: 'https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png'}, 
-  posts: [{type: mongoose.Types.ObjectId, ref: 'Post'}]
+  posts: [{type: mongoose.Types.ObjectId, ref: 'Post'}],
+  friends : [{type: mongoose.Types.ObjectId, required: true, ref: 'User'}]
 });
 
 module.exports = mongoose.model('User', schm); 

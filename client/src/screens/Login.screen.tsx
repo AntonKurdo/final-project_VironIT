@@ -23,7 +23,25 @@ const LoginScreen : FC = () => {
     const [loading, setLoading] = useState(false);
 
     const navigation = useNavigation();
-    const {setActiveUserInfo, getUserPosts} = useAppContext();
+    const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends} = useAppContext();
+
+    const login = async () => {
+        setLoading(true);
+        const result = await httpService.logIn({email, password});
+        setEmail('');
+        setPassword('');
+        if (typeof result !== 'boolean' && setActiveUserInfo) {
+            await setActiveUserInfo(result);
+            const posts = await httpService.getAllUserPostsById(result.id);
+            getUserPosts && getUserPosts(posts);
+            setAllUsers!(await httpService.getAllUsers());                       
+            setUserFriends!(await httpService.getAllFriendsById(result.id)); 
+            navigation.navigate('Profile');
+            setLoading(false);          
+        } else {
+            setLoading(false);
+        }
+    }
 
     const googleLog = async() => {
       setLoading(true);
@@ -32,14 +50,14 @@ const LoginScreen : FC = () => {
           await setActiveUserInfo(result);
           const posts = await httpService.getAllUserPostsById(result.id);
           getUserPosts && getUserPosts(posts);
+          setAllUsers && setAllUsers(await httpService.getAllUsers());
+          setUserFriends!(await httpService.getAllFriendsById(result.id)); 
           navigation.navigate('Profile');
           setLoading(false);
       } else {
           setLoading(false);
       }
   }
-
-
 
     if (loading) {
         return (
@@ -77,23 +95,7 @@ const LoginScreen : FC = () => {
                 </View>
                 <TouchableOpacity
                     style={styles.btn}
-                    onPress={async() => {
-                    setLoading(true);
-                    const result = await httpService.logIn({email, password});
-                    setEmail('');
-                    setPassword('');
-                    if (typeof result !== 'boolean' && setActiveUserInfo) {
-                        await setActiveUserInfo(result);
-                        const posts = await httpService.getAllUserPostsById(result.id);
-                        if (getUserPosts) {
-                            getUserPosts(posts);
-                        }
-                        navigation.navigate('Profile');
-                        setLoading(false);
-                    } else {
-                        setLoading(false);
-                    }
-                }}>
+                    onPress={login}>
                     <Text style={styles.btnText}>Log In</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.underBtn} activeOpacity={.9}>

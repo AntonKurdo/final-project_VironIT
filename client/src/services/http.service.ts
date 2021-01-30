@@ -175,6 +175,73 @@ class Http {
         return false
       }
     }
+
+    getAllUsers = async () => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/friends/allUsers`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`
+                    }
+                });                  
+                    const json = await res.json();
+                    if(json.message) {
+                       Alert.alert('Error', 'You have no authorization!!!')
+                       return [];
+                    }                  
+                    return json;   
+            }          
+        } catch(e) {
+            console.log(e);   
+            return [];         
+        }
+    }
+
+    getAllFriendsById = async (id: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/friends/allFriends/${id}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`                      
+                    }                    
+                });                  
+                    const json = await res.json();
+                    return json;
+            }          
+        } catch(e) {
+            console.log(e);                
+        }
+    }
+
+    addFriend = async (userId: string, newFriendId: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/friends/addFriend`, {
+                    method: "PUT",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({userId, newFriendId})
+                });                  
+                    const json = await res.json();
+                    if(json.message === 'New friend was added...') {   
+                        Alert.alert('Attention!!!', json.message)                     
+                        return true;
+                    }
+                    Alert.alert('Attention!!!', json.message)
+                    return false;                  
+            }    
+            return false     
+        } catch(e) {
+            console.log(e);                
+        }
+    }
 }
 
 export default new Http();
