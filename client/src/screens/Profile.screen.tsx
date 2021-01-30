@@ -5,7 +5,7 @@ import {StyleSheet, View, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { THEME } from './../../theme';
 import { useAppContext } from '../context/context';
-import { removeTokenInfo } from '../services/asyncStorage.service';
+
 
 const ProfileScreen: FC = () => {
   const socket = io('http://192.168.100.2:5000');
@@ -16,23 +16,10 @@ const ProfileScreen: FC = () => {
     })  
     return () => socket.off('chat message')
   }, [])
-
-  const navigation = useNavigation(); 
   
-  const {clearActiveUserInfo, clearUserPosts} = useAppContext();
-
-  const logoutHandler = async () => { 
-    navigation.navigate('Home'); 
-    clearActiveUserInfo && clearActiveUserInfo(); 
-    clearUserPosts && clearUserPosts();
-    await removeTokenInfo()
-  }
   return (
     <View style={styles.default}>    
-      <Text>ProfileScreen</Text>
-      <TouchableOpacity style={styles.btn} onPress={logoutHandler}>
-        <Text style={styles.btnText}>Log Out</Text>
-      </TouchableOpacity> 
+      <Text>ProfileScreen</Text>   
       <TouchableOpacity style={styles.btn} onPress={() => {socket.emit('chat message', 'Hello, I am working socket!!!')}}>
         <Text style={styles.btnText}>Socket Test</Text>
       </TouchableOpacity>      

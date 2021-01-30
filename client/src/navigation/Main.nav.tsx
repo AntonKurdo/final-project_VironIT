@@ -1,19 +1,20 @@
 import React from 'react';
+import { Alert, TouchableOpacity } from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Entypo, Ionicons} from '@expo/vector-icons';
+import { Entypo, Feather } from '@expo/vector-icons';
 import {THEME} from './../../theme';
-import {DrawerActions, NavigationContainer} from '@react-navigation/native';
+import { DrawerActions, NavigationContainer, useNavigation } from '@react-navigation/native';
 // SCREENS
 import StartingScreen from '../screens/Starting.screen';
 import SignUpScreen from './../screens/SingUp.screen';
 import LoginScreen from '../screens/LogIn.screen';
-import MyPosts from './../screens/MyPosts.screen';
 
 
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import CreatePostScreen from './../screens/CreatePost.screen';
 import ProfileDrawer from './Profile.drawer.nav';
 import PostNavigator from './Posts.nav';
+import { useAppContext } from '../context/context';
+import { removeTokenInfo } from '../services/asyncStorage.service';
+
 
 const routesStyling = {
     headerStyle: {
@@ -25,6 +26,29 @@ const routesStyling = {
 const Stack = createStackNavigator();
 
 function MainNavigator() {
+
+    const {clearActiveUserInfo, clearUserPosts} = useAppContext();
+
+    const logout = (nav: any) => {
+        Alert.alert(
+            "Log Out",
+            "Are You sure to exit?",
+            [            
+              { text: "OK", onPress: async () => {
+                nav.navigate('Home'); 
+                clearActiveUserInfo && clearActiveUserInfo(); 
+                clearUserPosts && clearUserPosts();
+                await removeTokenInfo();
+              }},
+              {
+                text: "Cancel",               
+                style: "cancel"
+              },
+            ],
+            { cancelable: false }
+          );       
+    }
+
     return (
         <NavigationContainer>
             <Stack.Navigator>
@@ -44,6 +68,17 @@ function MainNavigator() {
                                     color='#fff'
                                     style={{
                                     marginLeft: 20
+                                }}/>
+                            </TouchableOpacity>
+                        ),
+                        headerRight: () => (
+                            <TouchableOpacity onPress={() => logout(navigation)}>
+                                <Feather
+                                    name="power"
+                                    size={30}
+                                    color='#fff'
+                                    style={{
+                                    marginRight: 20
                                 }}/>
                             </TouchableOpacity>
                         )
