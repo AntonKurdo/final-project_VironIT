@@ -6,8 +6,7 @@ class PostsService {
   
   getAllUserPostsById = async (id: string) => {
     try {
-      const posts = await Post.find({owner: id});
-      console.log(posts)
+      const posts = await Post.find({owner: id});      
       return posts
     } catch(e) {      
       console.log(e)

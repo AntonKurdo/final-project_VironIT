@@ -7,7 +7,6 @@ import ProfileScreen from '../screens/Profile.screen';
 import SettingsScreen from './../screens/Settings.screen';
 
 import { THEME } from './../../theme';
-import PostNavigator from './Posts.nav';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,15 +27,6 @@ function ProfileTabNav() {
         options={{                     
           tabBarIcon: ({color}) => (        
            <AntDesign name="profile" size={30} color={color} />
-          )                  
-        }}
-      />     
-         <Tab.Screen 
-        name="Posts" 
-        component={PostNavigator}
-        options={{                     
-          tabBarIcon: ({color}) => (        
-            <MaterialCommunityIcons  name="post" size={30} color={color} />
           )                  
         }}
       />   

@@ -5,6 +5,7 @@ import {StyleSheet, View, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { THEME } from './../../theme';
 import { useAppContext } from '../context/context';
+import { removeTokenInfo } from '../services/asyncStorage.service';
 
 const ProfileScreen: FC = () => {
   const socket = io('http://192.168.100.2:5000');
@@ -20,10 +21,11 @@ const ProfileScreen: FC = () => {
   
   const {clearActiveUserInfo, clearUserPosts} = useAppContext();
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => { 
     navigation.navigate('Home'); 
     clearActiveUserInfo && clearActiveUserInfo(); 
     clearUserPosts && clearUserPosts();
+    await removeTokenInfo()
   }
   return (
     <View style={styles.default}>    

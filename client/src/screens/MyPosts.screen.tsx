@@ -1,6 +1,5 @@
 import React, {FC} from 'react';
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
 import { PostComponent } from '../components/Post.component';
 import { useAppContext } from '../context/context';
 
@@ -8,7 +7,13 @@ import { useAppContext } from '../context/context';
 const MyPosts = () => {
 
   const {posts} = useAppContext();
-
+  if(posts?.length === 0) {
+    return (
+      <View style={styles.container}> 
+        <Text style={styles.text}>You have no any post...</Text>
+      </View>
+    )
+  }
   return (
     <ScrollView>           
       {
@@ -22,5 +27,17 @@ const MyPosts = () => {
     </ScrollView>
   )
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1, 
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  text: {
+    fontSize: 22,
+    color: 'gray'
+  }
+})
 
 export default MyPosts;

@@ -58,7 +58,7 @@ class AuthService {
         email: user.email,        
         userId: user.id,
         'accessToken': accessToken, 
-        'refreshToken': refreshToken,
+        'refreshToken': refreshToken
       }
     } catch(e) {
       console.log(e.message)
@@ -71,7 +71,14 @@ class AuthService {
       const { email } = data;
       const user = await User.findOne({email});
       if(user) {
-         return user
+        const accessToken = jwt.sign({userId: user.id}, config.get('jwtSecret') , {expiresIn: '1h'});
+        const refreshToken = jwt.sign({userId: user.id}, config.get('jwtSecret'), {expiresIn: '24h'})
+        return {
+          email: user.email,        
+          userId: user.id,
+          'accessToken': accessToken, 
+          'refreshToken': refreshToken
+        }
       }
       return {message: 'You are not registred...'}     
     } catch(e) {

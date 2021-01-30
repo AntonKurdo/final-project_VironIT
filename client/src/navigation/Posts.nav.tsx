@@ -1,13 +1,13 @@
 import React from 'react';
 
-import {createStackNavigator} from '@react-navigation/stack';
-import { Entypo } from '@expo/vector-icons';
+
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import {THEME} from './../../theme';
 
 
 import MyPosts from './../screens/MyPosts.screen';
 import CreatePostScreen from './../screens/CreatePost.screen';
-import { TouchableOpacity } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const routesStyling = {  
   headerStyle: {
@@ -16,24 +16,37 @@ const routesStyling = {
   headerTintColor: '#fff'
 };
 
-const Stack = createStackNavigator();
+
+const Tab = createBottomTabNavigator();
 
 function PostNavigator() {  
   return (
-    <Stack.Navigator>
-         <Stack.Screen 
-          name="Posts" 
+    <Tab.Navigator
+    tabBarOptions = {
+      {
+        activeTintColor: THEME.MAIN_COLOR,
+        labelStyle: {fontSize: 14, fontWeight: 'bold'}        
+      }
+    }>
+         <Tab.Screen 
+          name="My Posts" 
           component={MyPosts} 
-          options={({navigation}) => ({
-            ...routesStyling,
-            headerRight: () => (
-              <TouchableOpacity onPress={() => navigation.navigate('Create New Post') }>
-                 <Entypo name="add-to-list" size={25} color='#fff' style={{marginRight: 25}} />
-              </TouchableOpacity>
-            )
-          })}/>
-         <Stack.Screen name="Create New Post" component={CreatePostScreen} options={routesStyling}/>
-    </Stack.Navigator>
+          options={{                     
+            tabBarIcon: ({color}) => (        
+             <MaterialCommunityIcons name="postage-stamp" size={30} color={color} />
+            )                  
+          }}
+        />
+         <Tab.Screen 
+          name="New Post" 
+          component={CreatePostScreen} 
+          options={{                     
+            tabBarIcon: ({color}) => (        
+             <Ionicons name="create" size={30} color={color} />
+            )                  
+          }}
+          />
+    </Tab.Navigator>
  
   )
 }

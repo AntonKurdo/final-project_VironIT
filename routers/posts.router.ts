@@ -1,14 +1,14 @@
 export {};
 const PostsController = require('./../controllers/posts.controller');
 const {Router} = require('express');
-
+const authMiddleware = require('../middlewares/auth.middleware');
 
 const controller = new PostsController();
 const router = Router();
 
 router
-  .get('/:id', controller.getAllUserPostsById)  
-  .post('/', controller.addNewPost)
-  .put('/:id', controller.likePostById)
+  .get('/:id', authMiddleware, controller.getAllUserPostsById)  
+  .post('/',  authMiddleware, controller.addNewPost)
+  .put('/:id',  authMiddleware, controller.likePostById)
 
 module.exports = router; 

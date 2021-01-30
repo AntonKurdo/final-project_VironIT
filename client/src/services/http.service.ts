@@ -1,7 +1,8 @@
 import {Alert} from 'react-native';
-import {storeTokenInfo} from './asyncStorage.service';
+import {getTokenInfo, storeTokenInfo} from './asyncStorage.service';
 import * as Google from 'expo-google-app-auth';
 import {iUserData} from '../context/context';
+import { raw } from 'body-parser';
 
 interface iData {
     email : string,
@@ -57,8 +58,12 @@ class Http {
         if (json.message) {
             Alert.alert('Error', json.message)
             return false;
-        }
-        // storeTokenInfo(json);
+        }      
+        storeTokenInfo({
+            accessToken: json.accessToken,
+            refreshToken: json.refreshToken,
+            userId: json.userId
+        });
         return {email: json.email, id: json.userId};
     }
 
@@ -82,8 +87,12 @@ class Http {
                     Alert.alert('Error', json.message)
                     return false;
                 }
-
-                return {email: json.email, id: json._id};
+                storeTokenInfo({
+                    accessToken: json.accessToken,
+                    refreshToken: json.refreshToken,
+                    userId: json.userId
+                });
+                return {email: json.email, id: json.userId};
             } else {
                 return false;
             }
@@ -93,25 +102,50 @@ class Http {
     }
 
     getAllUserPostsById = async(id : string) => {
-        const res = await fetch(`${this.URL}/posts/${id}`);
-        const posts = await res.json();
-        return posts;
+        try{
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/posts/${id}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`
+                    }
+                });                  
+                    const json = await res.json();
+                    if(json.message) {
+                       Alert.alert('Error', 'You can not get post, You have no authorization!!!')
+                       return [];
+                    }
+                    return json;   
+            }          
+        } catch(e) {
+            console.log(e)
+        }
     }
 
-    addNewPost = async(post : iNewPost) : Promise < boolean > => {
+    addNewPost = async(post : iNewPost): Promise<boolean> => {
         try {
-            const res = await fetch(`${this.URL}/posts`, {
-                method: 'POST',
-                body: JSON.stringify(post),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-
-            });
-            if (res) {
-                return true;
+            const tokenInfo = getTokenInfo && await getTokenInfo();
+           
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/posts`, {
+                    method: 'POST',
+                    body: JSON.stringify(post),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`
+                    }
+                });
+               const json = await res.json();          
+               if(json.message !== 'post created') {
+                  Alert.alert('Error', 'You can not create a new post. You have no authorization!!!')
+                  return false;
+               } else {
+                   return true;
+               }
             }
-            return false;
+            Alert.alert('Error', 'You can not create new post. You have no authorization!!!')
+            return false;          
         } catch (e) {
             console.log(e);
             return false;
@@ -120,14 +154,26 @@ class Http {
 
     likePostById = async(id: string): Promise<boolean> => {
       try{
-        await fetch(`${this.URL}/posts/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: null
-        });
-        return true
+        const tokenInfo = getTokenInfo && await getTokenInfo();
+        if(tokenInfo && typeof tokenInfo !== 'boolean') {
+            const res = await fetch(`${this.URL}/posts/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenInfo.accessToken}`
+            },
+            body: null
+            });
+            const json = await res.json();
+            if(json.message !== 'Ok') {
+                Alert.alert('Error', json.message)
+                return false;
+            } else {
+                return true;
+            }           
+        } else {
+            return false;
+        }
       } catch(e) {
         return false
       }

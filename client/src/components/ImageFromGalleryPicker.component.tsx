@@ -2,9 +2,9 @@ import React, {FC, useState} from 'react';
 import { StyleSheet, View, Alert, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import { Entypo } from '@expo/vector-icons';
-
-import { THEME } from './../../theme';
+import { AntDesign } from '@expo/vector-icons';
+import { THEME } from '../../theme';
+import * as MediaLibrary from 'expo-media-library';
 
 async function askForPermissions() {
   const { status } = await Permissions.askAsync(
@@ -18,29 +18,28 @@ async function askForPermissions() {
   return true;
 };
 
-export const VideoPicker: FC = ({}) => {
-  const [image, setImage] = useState('');
+interface iPhotoPickerProps {
+  setPictureHandler: (uri: string) => void
+}
+
+export const ImageFromGalleryPicker: FC<iPhotoPickerProps> = ({setPictureHandler}) => {
+  
 
   const takePhoto = async () => {
     const hasPermissions = await askForPermissions();
-
     if(!hasPermissions) {
       return 
     }
-   const img =  await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      quality: 0.7,
-      allowsEditing: false,
-      aspect: [16, 9]      
-    })
-    console.log(img)
-    // setImage(img.uri);
-    // onPick(img.uri);
+    const img = await ImagePicker.launchImageLibraryAsync();
+    if(!img.cancelled) {  
+      const asset = await MediaLibrary.createAssetAsync(img.uri);           
+      setPictureHandler(asset.uri)
+    }
   }
   return (
     <View style={styles.wrapper}>
         <TouchableOpacity onPress={takePhoto}>
-          <Entypo name="video-camera" size={30} color={THEME.MAIN_COLOR} />
+          <AntDesign name="link" size={30} color={THEME.MAIN_COLOR} />
         </TouchableOpacity>    
     </View> 
   )

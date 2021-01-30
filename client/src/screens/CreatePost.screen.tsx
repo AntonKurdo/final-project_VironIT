@@ -5,20 +5,17 @@ import {THEME} from './../../theme';
 import { FontAwesome } from '@expo/vector-icons';
 
 import {PhotoPicker} from './../components/PhotoPicker.component';
-import {VideoPicker} from './../components/VideoPicker.component';
+import {ImageFromGalleryPicker} from '../components/ImageFromGalleryPicker.component';
 import { useAppContext } from '../context/context';
 import { useNavigation } from '@react-navigation/native';
 
 const CreatePostScreen : FC = () => {
 
     const navigation = useNavigation();
-    const [title,
-        setTitle] = useState('');
-    const [text,
-        setText] = useState('');
-    const [picture,
-        setPicture] = useState('');
-    // const [video, setVideo] = useState('');
+    const [title, setTitle] = useState('');
+    const [text, setText] = useState('');
+    const [picture, setPicture] = useState('');
+
     const [isBtnDisabled, setIsBtnDisabled] = useState(false);   
     const setPictureHandler = (uri : string) => {
         setPicture(uri);
@@ -35,14 +32,13 @@ const CreatePostScreen : FC = () => {
                 setTitle('');
                 setText('');
                 setPicture('');
-                navigation.navigate('Posts');
+                navigation.navigate('My Posts');
             }
             setIsBtnDisabled(false);
         } else {
             Alert.alert('Error', 'To create new post you need add post title, text and post photo or video...')
         }
     }
-
     return (
         <ScrollView>
             <View style={styles.container}>          
@@ -63,7 +59,7 @@ const CreatePostScreen : FC = () => {
                 onChangeText={setText}/>
             <View style={styles.btnCont}>
                 <PhotoPicker setPictureHandler={setPictureHandler}/>
-                <VideoPicker/>
+                <ImageFromGalleryPicker  setPictureHandler={setPictureHandler}/>
             </View>
             {
                 picture !== '' 
