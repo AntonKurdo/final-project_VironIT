@@ -2,9 +2,8 @@ import {Alert} from 'react-native';
 import {getTokenInfo, storeTokenInfo} from './asyncStorage.service';
 import * as Google from 'expo-google-app-auth';
 import {iUserData} from '../context/context';
-import { raw } from 'body-parser';
 
-interface iData {
+interface iData {   
     email : string,
     password : string
 };
@@ -23,9 +22,7 @@ class Http {
     signUp = async(data : iData) : Promise < boolean > => {
         const res = await fetch(`${this.URL}/auth`, {
             method: 'POST',
-            body: JSON.stringify({
-                ...data
-            }),
+            body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -64,7 +61,7 @@ class Http {
             refreshToken: json.refreshToken,
             userId: json.userId
         });
-        return {email: json.email, id: json.userId};
+        return {firstName: json.firstName, lastName: json.lastName, email: json.email, avatar: json.avatar, id: json.userId};
     }
 
     signUpWithGoogle = async() : Promise < boolean | iUserData | undefined > => {
@@ -92,7 +89,7 @@ class Http {
                     refreshToken: json.refreshToken,
                     userId: json.userId
                 });
-                return {email: json.email, id: json.userId};
+                return {firstName: json.firstName, lastName: json.lastName, avatar: json.avatar, email: json.email, id: json.userId};
             } else {
                 return false;
             }

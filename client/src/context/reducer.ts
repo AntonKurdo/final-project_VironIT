@@ -6,7 +6,7 @@ export const reducer = (state: any, action: any) => {
     case SET_ACTIVE_USER_INFO: 
       return {...state, activeUserInfo: action.data}  
     case CLEAR_ACTIVE_USER_INFO: 
-      return {...state, activeUserInfo: {id: '', email: ''}}  
+      return {...state, activeUserInfo: {id: '', email: '', firstName: '', lastName: '', avatar: ''}}  
     case GET_USER_POSTS: 
       return {...state, userPosts: action.posts}
     case CLEAR_USER_POSTS: 

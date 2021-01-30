@@ -3,7 +3,10 @@ import { iPost } from './../components/Post.component';
 
 export interface iUserData{
   id: string,
-  email: string
+  email: string,
+  avatar: string,
+  firstName: string,
+  lastName: string
 }
 
 type iContext = {

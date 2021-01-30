@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator} from 'react-native';
+import {StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView} from 'react-native';
 import { THEME } from './../../theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import httpService from '../services/http.service';
@@ -10,6 +10,8 @@ const SignUpScreen: FC = () => {
   const [secure, setSecure] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
@@ -22,8 +24,35 @@ const SignUpScreen: FC = () => {
     )
   };
 
+  const signUp = async () => {
+    setLoading(true);
+    const result = await httpService.signUp({firstName, lastName, email, password});
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPassword('');
+    setLoading(false);
+    if(result) {
+      navigation.navigate('Login');
+    }
+  }
+
   return (
-    <View style={styles.container}>  
+    <ScrollView style={styles.container}>  
+      <TextInput          
+        placeholderTextColor={'#fff'}
+        placeholder='First Name'
+        style={{...styles.input, marginBottom: 30}}
+        value={firstName}
+        onChangeText={em => setFirstName(em.trim())}
+      />  
+      <TextInput          
+        placeholderTextColor={'#fff'}
+        placeholder='Last Name'
+        style={{...styles.input, marginBottom: 30}}
+        value={lastName}
+        onChangeText={em => setLastName(em.trim())}
+      />  
       <TextInput          
         placeholderTextColor={'#fff'}
         placeholder='E-mail'
@@ -47,30 +76,21 @@ const SignUpScreen: FC = () => {
           onChangeText={pass => setPassword(pass.trim())}
         />
       </View>  
-      <TouchableOpacity style={styles.btn} onPress={async () => {
-        setLoading(true);
-        const result = await httpService.signUp({email, password})
-        setEmail('');
-        setPassword('');
-        setLoading(false);
-        if(result) {
-          navigation.navigate('Login');
-        }
-      }}>
+      <TouchableOpacity style={styles.btn} onPress={signUp}>
         <Text style={styles.btnText}>Sign Up</Text>
       </TouchableOpacity>   
 
       <TouchableOpacity style={styles.underBtn} activeOpacity={.9} onPress={() => navigation.navigate('Login')}>
          <Text style={styles.underText}>I am already a member</Text>
       </TouchableOpacity>     
-    </View>
+    </ScrollView>
   )
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,    
-    justifyContent: 'center',
+    paddingTop: '25%',
     backgroundColor: THEME.MAIN_COLOR
   },
   titleText: {
@@ -112,8 +132,7 @@ const styles = StyleSheet.create({
     color: THEME.MAIN_COLOR
   },
   underBtn: {
-    position: 'absolute',
-    bottom: 15,
+    marginTop: 30,   
     alignSelf: 'center'    
   },
   underText: {

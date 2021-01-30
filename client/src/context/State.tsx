@@ -9,7 +9,10 @@ export const AppState: FC = ({children}) => {
   const INITIAL_STATE = {   
      activeUserInfo: {
        id: '',
-       email: ''
+       email: '',
+       firstName: '',
+       lastName: '',
+       avatar: ''
      },
      userPosts: []   
   };

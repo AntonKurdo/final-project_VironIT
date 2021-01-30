@@ -5,8 +5,11 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 
 const AuthScheme = require('../validation/auth.scheme');
+const LoginScheme = require('../validation/login.scheme');
 
 type AuthBodyT = {
+  firstName: string,
+  lastName: string,
   email: string,
   password: string
 }
@@ -18,7 +21,7 @@ type CheckingDataT = {
 class AuthService {
   auth = async(body: AuthBodyT) => {
     try{
-      const {email, password} = body;
+      const {firstName, lastName, email, password} = body;
       const isValid = await AuthScheme.isValid(body);      
       if(!isValid) {
         return {message: 'Try again... Check your credentials!!!'}
@@ -28,7 +31,7 @@ class AuthService {
         return {message: 'User with this login already exists'}
       }
       const hashedPassword = await bcrypt.hash(password, 12);
-      const user = new User({email, password: hashedPassword});
+      const user = new User({first_name: firstName, last_name: lastName, email, password: hashedPassword});
       await user.save();
       return {message: 'User has been created...'}
     } catch(e) {
@@ -40,7 +43,7 @@ class AuthService {
   login = async(body: AuthBodyT) => {
     try{
       const {email, password} = body;
-      const isValid = await AuthScheme.isValid(body);      
+      const isValid = await LoginScheme.isValid(body);      
       if(!isValid) {
         return {message: 'Try again... Check your credentials!!!'}
       }
@@ -55,8 +58,11 @@ class AuthService {
       const accessToken = jwt.sign({userId: user.id}, config.get('jwtSecret') , {expiresIn: '1h'});
       const refreshToken = jwt.sign({userId: user.id}, config.get('jwtSecret'), {expiresIn: '24h'})
       return {
+        firstName: user.first_name,
+        lastName: user.last_name,
         email: user.email,        
         userId: user.id,
+        avatar: user.avatar,
         'accessToken': accessToken, 
         'refreshToken': refreshToken
       }
@@ -74,7 +80,10 @@ class AuthService {
         const accessToken = jwt.sign({userId: user.id}, config.get('jwtSecret') , {expiresIn: '1h'});
         const refreshToken = jwt.sign({userId: user.id}, config.get('jwtSecret'), {expiresIn: '24h'})
         return {
-          email: user.email,        
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,  
+          avatar: user.avatar,      
           userId: user.id,
           'accessToken': accessToken, 
           'refreshToken': refreshToken
