@@ -9,7 +9,7 @@ const schm = new mongoose.Schema({
   date: {type: Date, default: Date.now()},
   likes: {type: Number, default: 0},
   isFavourite: {type: Boolean, default: false},
-  owner: [{type: mongoose.Types.ObjectId, required: true, ref: 'User'}]
+  owner: {type: mongoose.Types.ObjectId, required: true, ref: 'User'}
 });
 
 module.exports = mongoose.model('Post', schm);

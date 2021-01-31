@@ -242,6 +242,24 @@ class Http {
             console.log(e);                
         }
     }
+
+    getNews = async (id: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/posts/news/${id}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`                        
+                    }                   
+                });                  
+                    const json = await res.json();
+                    return json;                            
+            }          
+        } catch(e) {
+            console.log(e);                
+        }
+    }
 }
 
 export default new Http();

@@ -21,6 +21,7 @@ type iContext = {
     posts?: Array<iPost>,
     allUsers?: Array<iUser>,
     friends?: Array<iUser>,
+    news?: Array<iPost>,
     setActiveUserInfo?: (userData: iUserData) => void
     getUserPosts?: (posts: Array<iPost>) => void,
     clearActiveUserInfo?: () => void,
@@ -29,7 +30,9 @@ type iContext = {
     setAllUsers?: (users: Array<iUser>) => void,
     clearAllUsers?: () => void,
     setUserFriends?: (friends: Array<iUser>) => void,
-    addFriend?: (friend: iUser) => void
+    addFriend?: (friend: iUser) => void,
+    setNews?: (news: Array<iPost>) => void, 
+    clearNews?: () => void
 };
 
 

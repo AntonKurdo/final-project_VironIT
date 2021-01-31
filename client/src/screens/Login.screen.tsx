@@ -23,7 +23,7 @@ const LoginScreen : FC = () => {
     const [loading, setLoading] = useState(false);
 
     const navigation = useNavigation();
-    const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends} = useAppContext();
+    const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends, setNews} = useAppContext();
 
     const login = async () => {
         setLoading(true);
@@ -36,6 +36,7 @@ const LoginScreen : FC = () => {
             getUserPosts && getUserPosts(posts);
             setAllUsers!(await httpService.getAllUsers());                       
             setUserFriends!(await httpService.getAllFriendsById(result.id)); 
+            setNews!(await httpService.getNews(result.id));
             navigation.navigate('Profile');
             setLoading(false);          
         } else {
@@ -52,6 +53,7 @@ const LoginScreen : FC = () => {
           getUserPosts && getUserPosts(posts);
           setAllUsers && setAllUsers(await httpService.getAllUsers());
           setUserFriends!(await httpService.getAllFriendsById(result.id)); 
+          setNews!(await httpService.getNews(result.id));
           navigation.navigate('Profile');
           setLoading(false);
       } else {

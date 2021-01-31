@@ -1,5 +1,6 @@
 export {};
 const Post = require('../models/post.model');
+const User = require('../models/user.model');
 
 class PostsService {
   
@@ -40,6 +41,16 @@ class PostsService {
     } catch(e) {
       console.log(e)
     }
+  }
+
+  getNews = async (_id: string) => {
+    try {
+      const user = await User.findOne({_id});
+      const friendsPosts = await Post.find({owner: user.friends})
+      return friendsPosts;
+    } catch(e) {
+      console.log(e)
+    } 
   }
 };
 

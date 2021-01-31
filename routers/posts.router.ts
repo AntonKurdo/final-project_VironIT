@@ -8,6 +8,7 @@ const router = Router();
 
 router
   .get('/:id', authMiddleware, controller.getAllUserPostsById)  
+  .get('/news/:id', controller.getNews)
   .post('/',  authMiddleware, controller.addNewPost)
   .put('/:id',  authMiddleware, controller.likePostById)
 

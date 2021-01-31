@@ -21,6 +21,10 @@ class PostsController {
   likePostById = async (req: Request, res: Response) => {
     res.send(await this.service.likePostById(req.params.id))
   }
+
+  getNews = async (req: Request, res: Response) => {
+    res.send(await this.service.getNews(req.params.id))
+  }
 }
 
 module.exports = PostsController;

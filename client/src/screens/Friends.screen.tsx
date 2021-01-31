@@ -42,6 +42,7 @@ const FriendsScreen: FC = () => {
             <TouchableOpacity style={styles.removeTextIcon} onPress={() => {
               setSearchingText('');
               setCandidates([]);
+              setIsAllCandidates(false);
             }}>
               <Entypo name="circle-with-cross" size={24} color={THEME.MAIN_COLOR} />     
             </TouchableOpacity>             
@@ -85,7 +86,7 @@ const FriendsScreen: FC = () => {
         </View>
       </View> 
       <View style={styles.friendCont}>
-        <Text style={styles.friendsTitle}>You have {friends!.length} friends:</Text>
+        <Text style={styles.friendsTitle}>You have {friends!.length} friend(s):</Text>
         {         
             friends!.length !== 0 && friends!.map((friend: iCandidate) => {
                 return (

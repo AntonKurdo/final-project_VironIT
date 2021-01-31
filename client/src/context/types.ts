@@ -7,3 +7,5 @@ export const SET_ALL_USERS = 'SET_ALL_USERS';
 export const CLEAR_ALL_USERS = 'CLEAR_ALL_USER';
 export const SET_USER_FRIENDS = 'SET_USER_FRIENDS';
 export const ADD_FRIEND = 'ADD_FRIEND';
+export const SET_NEWS = 'SET_NEWS';
+export const CLEAR_NEWS = 'CLEAR_NEWS';

@@ -1,4 +1,4 @@
-import { SET_ACTIVE_USER_INFO, GET_USER_POSTS, CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND } from "./types";
+import { SET_ACTIVE_USER_INFO, GET_USER_POSTS, CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS } from "./types";
 import { iPost } from './../components/Post.component';
 
 export const reducer = (state: any, action: any) => {
@@ -40,6 +40,12 @@ export const reducer = (state: any, action: any) => {
     
     case ADD_FRIEND: 
       return {...state, friends: [...state.friends, action.friend]}
+
+    case SET_NEWS: 
+      return {...state, news: action.news}
+
+    case CLEAR_NEWS: 
+      return {...state, news: []}
     default: 
       return state;
   }
