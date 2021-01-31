@@ -149,17 +149,17 @@ class Http {
         }
     }
 
-    likePostById = async(id: string): Promise<boolean> => {
+    likePostById = async(postId: string, userId: string): Promise<boolean> => {
       try{
         const tokenInfo = getTokenInfo && await getTokenInfo();
         if(tokenInfo && typeof tokenInfo !== 'boolean') {
-            const res = await fetch(`${this.URL}/posts/${id}`, {
+            const res = await fetch(`${this.URL}/posts`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${tokenInfo.accessToken}`
             },
-            body: null
+            body: JSON.stringify({postId, userId})
             });
             const json = await res.json();
             if(json.message !== 'Ok') {

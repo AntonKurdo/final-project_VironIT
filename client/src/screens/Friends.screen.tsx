@@ -13,7 +13,7 @@ interface iCandidate {
 }
 const FriendsScreen: FC = () => {
 
-  const  {activeUserInfo, friends, allUsers, addFriend} = useAppContext();
+  const  {activeUserInfo, friends, allUsers, addFriend, setNews} = useAppContext();
   const [searchingText, setSearchingText] = useState('');
   const [candidates, setCandidates] = useState<iCandidate[]>([]);
   const [isAllCandidates, setIsAllCandidates] = useState(false);
@@ -69,6 +69,7 @@ const FriendsScreen: FC = () => {
                   <TouchableOpacity style={styles.chatBtn} onPress={async() => {
                        const result = await httpService.addFriend(activeUserInfo.id, candidate.id);
                        if(result) {
+                          setNews!(await httpService.getNews(activeUserInfo.id))
                           addFriend!({
                             id: candidate.id,
                             firstName: candidate.firstName,

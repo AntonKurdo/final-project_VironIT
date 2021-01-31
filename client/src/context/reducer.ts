@@ -15,18 +15,30 @@ export const reducer = (state: any, action: any) => {
     case CLEAR_USER_POSTS: 
       return {...state, userPosts: []}    
 
-    case LIKE_POST_BY_ID: 
-        const newPosts = state.userPosts.map((post: iPost) => {
-        if(post._id === action.id && post.isFavourite) {
-          post.isFavourite = false;
-          post.likes = post.likes - 1
-        } else if(post._id === action.id && !post.isFavourite) {
-          post.isFavourite = true;
-          post.likes = post.likes + 1
-        } 
-        return post;
-      })
-      return {...state, userPosts: newPosts}    
+    case LIKE_POST_BY_ID:      
+     const newPosts = state.userPosts.map((post: iPost) => {     
+      if(post._id === action.id) {        
+        const isLiked = post.likes.indexOf(state.activeUserInfo.id);    
+        if(isLiked === -1) {
+          post.likes.push(state.activeUserInfo.id);
+        } else {
+          post.likes = post.likes.filter((id: string) => id !== state.activeUserInfo.id)
+        }
+      }      
+      return post
+     })   
+     const newNews = state.news.map((item: any) => {     
+      if(item._id === action.id) {        
+        const isLiked = item.likes.indexOf(state.activeUserInfo.id);    
+        if(isLiked === -1) {
+          item.likes.push(state.activeUserInfo.id);
+        } else {
+          item.likes = item.likes.filter((id: string) => id !== state.activeUserInfo.id)
+        }
+      }      
+      return item
+     })     
+    return {...state, userPosts: newPosts, news: newNews}
 
     case SET_ALL_USERS: 
       const UserWithoutActiveUser = action.allUsers.filter((user: any) => user.firstName + user.lastName !== state.activeUserInfo.firstName + state.activeUserInfo.lastName);

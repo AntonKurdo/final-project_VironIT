@@ -7,8 +7,7 @@ const schm = new mongoose.Schema({
   picture: {type: String},
   video: {type: String},
   date: {type: Date, default: Date.now()},
-  likes: {type: Number, default: 0},
-  isFavourite: {type: Boolean, default: false},
+  likes: [{type: mongoose.Types.ObjectId, ref: 'User'}],
   owner: {type: mongoose.Types.ObjectId, required: true, ref: 'User'}
 });
 

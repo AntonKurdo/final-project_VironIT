@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useState, useEffect} from 'react';
 import {
     StyleSheet,
     View,
@@ -15,12 +15,11 @@ import { useAppContext } from '../context/context';
 export interface iPost {
     _id : string,
     date : Date,
-    likes : number,
-    isFavourite : boolean,
+    likes : Array<string>,
     title : string,
     text : string,
     picture : string,
-    owner : string
+    owner : string    
 }
 
 interface props {
@@ -29,18 +28,24 @@ interface props {
 
 export const PostComponent : FC < props > = ({post}) => {
 
-  const {likePostById} = useAppContext();
-
+  const {activeUserInfo,  likePostById} = useAppContext(); 
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const [isFavorite, setIsFavourite] = useState(post.likes.includes(activeUserInfo.id));
 
-    const likeHandler = async (id : string) => {      
+    const likeHandler = async (postId: string) => {          
         setIsBtnDisabled(true);
-        const res = await httpService.likePostById(id);
-        if(res) {
-          likePostById && likePostById(id);
-          setIsBtnDisabled(false);
+        const res = await httpService.likePostById(postId, activeUserInfo.id);
+        if(res) {          
+          likePostById!(postId);
+          setIsBtnDisabled(false); 
+          if(isFavorite) {
+              setIsFavourite(false)
+          } else {
+              setIsFavourite(true)
+          }        
         }
     };
+ 
 
     return (
         <View style={styles.container}>
@@ -51,12 +56,12 @@ export const PostComponent : FC < props > = ({post}) => {
                 style={styles.image}>
                 <View style={styles.wrapperTitle}>
                     <Text style={styles.text}>{post.title}</Text>
-                    <Text style={styles.likesNumber}>{post.likes}</Text>
+                    <Text style={styles.likesNumber}>{post.likes.length}</Text>
                     <TouchableOpacity
                         disabled={isBtnDisabled}
                         style={styles.btnLike}
                         onPress={likeHandler.bind(null, post._id)}>
-                        {post.isFavourite
+                        {isFavorite
                             ? <AntDesign name="heart" size={24} color='#fff'/>
                             : <AntDesign name="hearto" size={24} color='#fff'/>
 }

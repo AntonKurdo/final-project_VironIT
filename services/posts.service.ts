@@ -29,13 +29,14 @@ class PostsService {
     }    
   } 
 
-  likePostById = async (_id:string) => {
-    try {
-      const post = await Post.findOne({_id});  
-      if(post.isFavourite) {
-        await Post.updateOne({_id}, {isFavourite: !post.isFavourite, likes: post.likes - 1})
+  likePostById = async (postId: string, userId: string) => {
+    try {   
+      const post = await Post.findOne({_id: postId});  
+      const isAlreadyLiked = post.likes.indexOf(userId);
+      if(isAlreadyLiked === -1) {
+        await Post.updateOne({_id: postId}, {likes: [...post.likes, userId]})
       } else {
-        await Post.updateOne({_id}, {isFavourite: !post.isFavourite, likes: post.likes + 1})
+        await Post.updateOne({_id: postId}, {likes: post.likes.filter((item: any) => item != userId)})
       }    
       return {message: 'Ok'}
     } catch(e) {
