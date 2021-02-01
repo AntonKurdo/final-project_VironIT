@@ -45,21 +45,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  wrapper: {
-    marginVertical: 5,
-    borderTopColor: THEME.MAIN_COLOR,
-    borderTopWidth: 2,
-    borderBottomColor: THEME.MAIN_COLOR,
-    borderBottomWidth: 2,
+  wrapper: {   
+    marginVertical: 5,   
     paddingTop: 3,
   },
-  postHeader: {    
+  postHeader: { 
+    alignSelf: 'center',   
     height: 50,
-    width: '100%',
+    width: '97%',
     marginBottom: -5,
     flexDirection: 'row',
     paddingHorizontal: 20,   
-    alignItems: 'center'
+    alignItems: 'center',
+    borderTopWidth: 2,
+    borderRightWidth: 2,
+    borderLeftWidth: 2,
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
+    borderColor: THEME.MAIN_COLOR
   },
   ava: {
     width: 40,

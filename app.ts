@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const authRouter = require('./routers/auth.router');
 const postRouter = require('./routers/posts.router');
 const friendsRouter = require('./routers/friends.router');
+const commentsRouter = require('./routers/comments.router');
 
 const PORT = process.env.PORT || config.get('port');
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 app.use('/', authRouter);
 app.use('/posts', postRouter);
 app.use('/friends', friendsRouter);
+app.use('/comments', commentsRouter);
 
 async function startApp() {
   try {

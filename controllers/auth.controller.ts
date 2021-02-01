@@ -8,7 +8,6 @@ class AuthController {
   constructor() {    
     this.service = new AuthService();
   }
-
   auth = async (req: Request, res: Response) => {
     res.send(await this.service.auth(req.body))
   }

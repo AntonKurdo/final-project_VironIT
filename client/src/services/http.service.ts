@@ -2,6 +2,7 @@ import {Alert} from 'react-native';
 import {getTokenInfo, storeTokenInfo} from './asyncStorage.service';
 import * as Google from 'expo-google-app-auth';
 import {iUserData} from '../context/context';
+import { iComment } from '../components/Post.component';
 
 interface iData {   
     email : string,
@@ -256,6 +257,51 @@ class Http {
                     const json = await res.json();
                     return json;                            
             }          
+        } catch(e) {
+            console.log(e);                
+        }
+    }
+
+    getCommentsByPostId = async (postId: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/comments/${postId}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`                        
+                    }                   
+                });                  
+                    const json = await res.json();
+                    return json;                            
+            }          
+        } catch(e) {
+            console.log(e);   
+            return [];             
+        }
+    }
+
+    addNewComment = async (comment: iComment) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/comments/`, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(comment)
+                });                  
+                    const json = await res.json();
+                    if(json.message === 'Comment was added...') {    
+                        Alert.alert('Success', json.message);                                        
+                        return true;
+                    } 
+                    Alert.alert('Error', 'Comment was not added, try again...');
+                    return false;                         
+            }    
+            return false     
         } catch(e) {
             console.log(e);                
         }
