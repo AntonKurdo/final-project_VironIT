@@ -68,14 +68,14 @@ const FriendsScreen: FC = () => {
                   <Text>{candidate.firstName} {candidate.lastName}</Text>
                   <TouchableOpacity style={styles.chatBtn} onPress={async() => {
                        const result = await httpService.addFriend(activeUserInfo.id, candidate.id);
-                       if(result) {
-                          setNews!(await httpService.getNews(activeUserInfo.id))
+                       if(result) {                        
                           addFriend!({
                             id: candidate.id,
                             firstName: candidate.firstName,
                             lastName: candidate.lastName,
                             avatar: candidate.avatar
                           })
+                          setNews!(await httpService.getNews(activeUserInfo.id))
                        }
                   }}>
                       <AntDesign name="adduser" size={25} color={THEME.MAIN_COLOR} />

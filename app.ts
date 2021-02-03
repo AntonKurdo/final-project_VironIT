@@ -9,6 +9,7 @@ const authRouter = require('./routers/auth.router');
 const postRouter = require('./routers/posts.router');
 const friendsRouter = require('./routers/friends.router');
 const commentsRouter = require('./routers/comments.router');
+const socketStart = require('./services/socket.service');
 
 const PORT = process.env.PORT || config.get('port');
 
@@ -18,31 +19,19 @@ app.use('/posts', postRouter);
 app.use('/friends', friendsRouter);
 app.use('/comments', commentsRouter);
 
-async function startApp() {
+(async function startApp() {
   try {
     await mongoose.connect(config.get('mongoURL'), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true
-    });  
-    
-    io.on("connection", (socket: any) => {
-      console.log("a user connected :D");
-      socket.on("chat message", (msg: string) => {
-        console.log(msg);
-        io.emit("chat message", msg);
-      });
-    });
-
-    http.listen(PORT, () => console.log(chalk.blue(`Server has been started on port ${PORT}...`)));
-
-  
+    });   
+    await socketStart(io);
+    http.listen(PORT, () => console.log(chalk.blue(`Server has been started on port ${PORT}...`)));  
   } catch(err) {
     console.log(chalk.blue('Server Error: ' + err.message));
     process.exit();    
   }
-}
-
-startApp();
+})();
 
 

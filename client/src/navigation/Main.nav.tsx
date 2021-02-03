@@ -8,12 +8,12 @@ import { DrawerActions, NavigationContainer, useNavigation } from '@react-naviga
 import StartingScreen from '../screens/Starting.screen';
 import SignUpScreen from './../screens/SingUp.screen';
 import LoginScreen from '../screens/LogIn.screen';
-
-
 import ProfileDrawer from './Profile.drawer.nav';
 import PostNavigator from './Posts.nav';
 import { useAppContext } from '../context/context';
 import { removeTokenInfo } from '../services/asyncStorage.service';
+import CurrentChatScreen from './../screens/CurrentChat.screen';
+
 
 
 const routesStyling = {
@@ -27,7 +27,7 @@ const Stack = createStackNavigator();
 
 function MainNavigator() {
 
-    const {clearActiveUserInfo, clearUserPosts, clearAllUsers, clearNews} = useAppContext();
+    const {activeUserInfo, clearActiveUserInfo, clearUserPosts, clearAllUsers, clearNews} = useAppContext();
 
     const logout = (nav: any) => {
         Alert.alert(
@@ -40,8 +40,8 @@ function MainNavigator() {
                 clearUserPosts!();
                 clearAllUsers!();
                 clearNews!();
-                await removeTokenInfo();
-              }},
+                await removeTokenInfo();               
+             }},
               {
                 text: "Cancel",               
                 style: "cancel"
@@ -61,6 +61,7 @@ function MainNavigator() {
                     name="Profile" 
                     component={ProfileDrawer} 
                     options = {({navigation}) => ({
+                        title: `${activeUserInfo.firstName} ${activeUserInfo.lastName}`,
                         ...routesStyling,
                         headerLeft: () => (
                             <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
@@ -86,6 +87,7 @@ function MainNavigator() {
                         )
                     })}/> 
                     <Stack.Screen name="Posts" component={PostNavigator} options={routesStyling}/>   
+                    <Stack.Screen name="Current chat" component={CurrentChatScreen} options={routesStyling}/>   
             </Stack.Navigator>
         </NavigationContainer>
     );

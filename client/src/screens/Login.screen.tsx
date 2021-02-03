@@ -36,9 +36,9 @@ const LoginScreen : FC = () => {
             getUserPosts && getUserPosts(posts);
             setAllUsers!(await httpService.getAllUsers());                       
             setUserFriends!(await httpService.getAllFriendsById(result.id)); 
-            setNews!(await httpService.getNews(result.id));
+            setNews!(await httpService.getNews(result.id));           
             navigation.navigate('Profile');
-            setLoading(false);          
+            setLoading(false);            
         } else {
             setLoading(false);
         }

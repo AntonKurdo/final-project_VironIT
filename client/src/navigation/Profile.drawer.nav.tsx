@@ -2,10 +2,11 @@ import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import ProfileTabNav from './Profile.nav';
 import PostNavigator from './Posts.nav';
-import { MaterialCommunityIcons, Entypo, FontAwesome5} from '@expo/vector-icons';
+import { MaterialCommunityIcons, Entypo, FontAwesome5, MaterialIcons} from '@expo/vector-icons';
 import { THEME } from './../../theme';
 import FriendsScreen from '../screens/Friends.screen';
 import NewsScreen from '../screens/News.screen';
+import AllChatsScreen from '../screens/AllChats.screen';
 const Drawer = createDrawerNavigator();
 
 function ProfileDrawer() {
@@ -28,6 +29,13 @@ function ProfileDrawer() {
               component={NewsScreen}
               options={{
                 drawerIcon: (props) => <Entypo name="news" size={24} color={props.color} />
+              }}
+            />
+            <Drawer.Screen 
+              name="Chats" 
+              component={AllChatsScreen}
+              options={{
+                drawerIcon: (props) => <MaterialIcons name="message" size={24} color={props.color} />
               }}
             />
             <Drawer.Screen 

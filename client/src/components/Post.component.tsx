@@ -119,9 +119,9 @@ export const PostComponent : FC < props > = ({post}) => {
                     <TouchableOpacity style={styles.commentsHeader} onPress={openComments.bind(null, post._id)}>
                         <Text style={{color: '#fff', fontSize: 17, marginRight: 10}}>comments</Text>
                     {
-                        !isCommentsShown 
-                            ?  <AntDesign name="arrowdown" size={17} color='#fff' />
-                            :  <AntDesign name="arrowup" size={17} color='#fff' />
+                        isCommentsShown 
+                            ?  <AntDesign name="arrowdown" style={{alignSelf: 'center'}} size={17} color='#fff' />
+                            :  <AntDesign name="arrowup" style={{alignSelf: 'center'}} size={17} color='#fff' />
                     }
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.refreshBtn} onPress={refreshComments.bind(null, post._id)}>
