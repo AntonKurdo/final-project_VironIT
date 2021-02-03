@@ -306,6 +306,29 @@ class Http {
             console.log(e);                
         }
     }
+    changeAvatar = async (userId: string, newAvatar: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/profile`, {
+                    method: "PUT",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        newAvatar
+                    })
+                });                  
+                    const json = await res.json();
+                    Alert.alert('Attention', json.message)                                          
+            }    
+            return false     
+        } catch(e) {
+            console.log(e);                
+        }
+    }
 }
 
 export default new Http();

@@ -23,8 +23,6 @@ interface iPhotoPickerProps {
 }
 
 export const ImageFromGalleryPicker: FC<iPhotoPickerProps> = ({setPictureHandler}) => {
-  
-
   const takePhoto = async () => {
     const hasPermissions = await askForPermissions();
     if(!hasPermissions) {

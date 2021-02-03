@@ -1,7 +1,7 @@
 import React, {FC,useReducer} from 'react';
 import Context, { iUserData, iUser } from './context';
 import {reducer} from './reducer';
-import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS } from './types';
+import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR } from './types';
 import { iPost } from './../components/Post.component';
 
 export const AppState: FC = ({children}) => {
@@ -33,6 +33,7 @@ export const AppState: FC = ({children}) => {
     const addFriend = (friend: iUser) => dispatch({type: ADD_FRIEND, friend});
     const setNews = (news: Array<iPost>) => dispatch({type: SET_NEWS, news});
     const clearNews = () => dispatch({type: CLEAR_NEWS})
+    const changeAvatar = (newAvatar: string) => dispatch({type: CHANGE_AVATAR, newAvatar})
 
     return <Context.Provider
         value={{
@@ -51,6 +52,7 @@ export const AppState: FC = ({children}) => {
           setUserFriends,
           addFriend,
           setNews,
-          clearNews   
+          clearNews,
+          changeAvatar   
     }}>{children}</Context.Provider>
 };

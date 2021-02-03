@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Image,
-    ScrollView      
+    ScrollView,
+    Keyboard      
 } from 'react-native';
 import {MaterialIcons} from '@expo/vector-icons';
 import httpService from '../services/http.service';
@@ -26,6 +27,7 @@ const LoginScreen : FC = () => {
     const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends, setNews} = useAppContext();
 
     const login = async () => {
+        Keyboard.dismiss();
         setLoading(true);
         const result = await httpService.logIn({email, password});
         setEmail('');
@@ -59,7 +61,7 @@ const LoginScreen : FC = () => {
       } else {
           setLoading(false);
       }
-  }
+    }
 
     if (loading) {
         return (
@@ -82,7 +84,10 @@ const LoginScreen : FC = () => {
                     value={email}
                     onChangeText={em => setEmail(em.trim())}/>
                 <View>
-                    <TouchableOpacity style={styles.icon} onPress={() => setSecure(!secure)}>
+                    <TouchableOpacity style={styles.icon} onPress={() => {                        
+                        Keyboard.dismiss();
+                        setSecure(!secure);
+                    }}>
                         {secure
                             ? <MaterialIcons name="visibility-off" size={28} color={THEME.MAIN_COLOR}/>
                             : <MaterialIcons name="visibility" size={28} color={THEME.MAIN_COLOR}/>}

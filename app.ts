@@ -5,17 +5,22 @@ const config = require('config');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+
+const socketStart = require('./services/socket.service');
+
+//Routers
 const authRouter = require('./routers/auth.router');
 const postRouter = require('./routers/posts.router');
 const friendsRouter = require('./routers/friends.router');
 const commentsRouter = require('./routers/comments.router');
-const socketStart = require('./services/socket.service');
+const profileRouter = require('./routers/profile.router');
 
 const PORT = process.env.PORT || config.get('port');
 
 app.use(bodyParser.json());
 app.use('/', authRouter);
 app.use('/posts', postRouter);
+app.use('/profile', profileRouter)
 app.use('/friends', friendsRouter);
 app.use('/comments', commentsRouter);
 
