@@ -4,17 +4,17 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, Dimensions
 import {TextInput} from 'react-native-gesture-handler';
 import { THEME } from './../../theme';
 import { useAppContext } from './../context/context';
-
+import { Audio } from 'expo-av';
 import {io} from "socket.io-client";
 
 const socket = io('http://192.168.100.2:5000');
 
 interface iMsg {
-  _id: string,
+  _id?: string,
   authorFullName: string,
   authorId: string,
   content: string,
-  chatId: string,  
+  chatId?: string,  
   date: Date
 }
 
@@ -25,15 +25,15 @@ const CurrentChatScreen : FC = (props: any) => {
     const [msgText, setMsgText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {     
-      socket.emit('chat message', {content: 'start'}, activeUserInfo.id, props.route.params.id); 
+    useEffect(() => {
+      socket.emit('open chat', activeUserInfo.id, props.route.params.id); 
       setIsLoading(true)   
     }, [])
 
     useEffect((): any => {   
       let cleanUpFunction = false
       const func = () => {        
-        socket.on('chat message', (msg : any) => {            
+        socket.on('get message', (msg : any) => {            
           if(!cleanUpFunction) {
             setMessages(JSON.parse(msg))
             setIsLoading(false)
@@ -42,24 +42,41 @@ const CurrentChatScreen : FC = (props: any) => {
       }    
       func()       
       return () => cleanUpFunction = true        
+    }, [])
+
+    useEffect((): any => {   
+      let cleanUpFunction = false
+      const func = () => {        
+        socket.on('recieve chat message', (msg : any) => {            
+          if(!cleanUpFunction) {
+            setMessages([...messages, JSON.parse(msg)])           
+          }
+        }); 
+      }    
+      func()       
+      return () => cleanUpFunction = true        
     })
 
-
-    const sendMessage = () => {
-     if(msgText) {    
-       setIsLoading(true) 
-      const newMsg = {
+    const sendMessage = async () => {
+     if(msgText) {       
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/message_sound.mp3')        
+      );
+      const newMsg: iMsg = {
         authorFullName: `${activeUserInfo.firstName} ${activeUserInfo.lastName}`,
-        content: msgText       
+        content: msgText,
+        authorId: activeUserInfo.id,
+        date: new Date(Date.now())          
       }
-      socket.emit('chat message', newMsg, activeUserInfo.id, props.route.params.id)
-      setMsgText('');     
+      socket.emit('chat message', newMsg, activeUserInfo.id, props.route.params.id);    
+      setMsgText(''); 
+      await sound.setVolumeAsync(0.1);
+      await sound.playAsync();    
      } else {
        Alert.alert('Error', 'Message should not be empty')
      }
     }
-
-
+    
     return (
         <View style={styles.container}>
             <View style={styles.chat}>

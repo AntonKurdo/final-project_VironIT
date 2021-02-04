@@ -13,38 +13,33 @@ interface iMessage {
 
 const socketStart = async (io: any) => {
   try {
-    io.on("connection", (socket: any) => {        
-      socket.on("chat message", async (msg: {content: string, authorFullName?: string}, fromId: string, toId: string) => {       
-        const chat = await Chat.findOne({$or: [{_id: `${fromId}${toId}`}, {_id: `${toId}${fromId}`}]});  
-        let messages: Array<iMessage> = [];    
-        if(!chat) {
+    io.on("connection", (socket: any) => {   
+      socket.on('open chat', async (fromId: string, toId: string) => {        
+        const chat = await Chat.findOne({$or: [{_id: `${fromId}${toId}`}, {_id: `${toId}${fromId}`}]});       
+        if(chat) {        
+          io.emit("get message", JSON.stringify(await Message.find({chatId: chat._id})));
+        } else {
           const newChat = new Chat({
             _id: `${fromId}${toId}`,
             usersId: [fromId, toId]
           })
           await newChat.save()
-        }        
-        if(msg.content !== 'start') {     
-          const {authorFullName, content} = msg;
-          const newMessage = new Message({
+          io.emit("get message", JSON.stringify([]));
+        }
+      })  
+
+      socket.on("chat message", async (msg: {content: string, authorFullName: string, date: Date}, fromId: string, toId: string) => {       
+        const chat = await Chat.findOne({$or: [{_id: `${fromId}${toId}`}, {_id: `${toId}${fromId}`}]});           
+        const {authorFullName, content, date} = msg;
+        const newMessage = new Message({
             authorId: fromId,
             authorFullName,
             content,
-            chatId: chat.id || `${fromId}${toId}`
-          });
-          await newMessage.save();
-          const msgs = chat 
-                          ? await Message.find({chatId: chat.id})
-                          : await Message.find({chatId: `${fromId}${toId}`})
-          messages = [...messages, ...msgs];
-          io.emit("chat message", JSON.stringify(messages));
-        } else {  
-          const msgs = chat 
-                        ? await Message.find({chatId: chat.id})
-                        : await Message.find({chatId: `${fromId}${toId}`})
-          messages = [...messages, ...msgs];
-          io.emit("chat message", JSON.stringify(messages));
-        }     
+            chatId: chat.id,
+            date
+        });
+        await newMessage.save();      
+        io.emit("recieve chat message", JSON.stringify(msg));         
       });   
     });
   } catch(e) {
