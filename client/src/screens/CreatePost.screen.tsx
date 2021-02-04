@@ -13,7 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Video} from 'expo-av';
 import httpService from '../services/http.service';
 import {THEME} from './../../theme';
-import {FontAwesome} from '@expo/vector-icons';
+import {Entypo, FontAwesome} from '@expo/vector-icons';
 import {PhotoPicker} from './../components/PhotoPicker.component';
 import {VideoPicker} from './../components/VideoPicker.component';
 import {ImageFromGalleryPicker} from '../components/ImageFromGalleryPicker.component';
@@ -30,7 +30,8 @@ const CreatePostScreen : FC = () => {
     const [picture, setPicture] = useState('');
     const [video, setVideo] = useState('');
     const [isBtnDisabled, setIsBtnDisabled] = useState(false);
-
+    const [isMuted, setIsMuted] = useState(true);
+    
     const setPictureHandler = (uri : string) => {
         // setVideo('');
         setPicture(uri);
@@ -96,24 +97,31 @@ const CreatePostScreen : FC = () => {
                         ||
                      (picture === '' && video !== '')
                         &&    (<View style={styles.picCont}>
-                        <Video
-                            source={{
-                            uri: video
-                        }}
-                            rate={1.0}
-                            volume={0}
-                            isMuted={false}
-                            resizeMode="cover"
-                            shouldPlay
-                            isLooping
-                            style={{
-                            width: 300,
-                            height: 200
-                        }}/>
-                        <TouchableOpacity style={styles.removePicBtn} onPress={() => setVideo('')}>
-                            <FontAwesome name="remove" size={25} color='#fff'/>
-                        </TouchableOpacity>
-                    </View>           )
+                                <Video
+                                    source={{
+                                    uri: video
+                                }}
+                                    rate={1.0}
+                                    volume={1.0}
+                                    isMuted={isMuted}
+                                    resizeMode="cover"
+                                    shouldPlay
+                                    isLooping
+                                    style={{
+                                    width: 300,
+                                    height: 200
+                                }}/>
+                                <TouchableOpacity style={styles.removePicBtn} onPress={() => setVideo('')}>
+                                    <FontAwesome name="remove" size={25} color='#fff'/>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.soundBtn} onPress={() => setIsMuted(!isMuted)}>
+                            {
+                                !isMuted 
+                                    ?  <Entypo name="sound" size={30} color='#fff' />
+                                    :  <Entypo name="sound-mute" size={30} color='#fff' />
+                            }                           
+                        </TouchableOpacity>    
+                            </View>           )
             }      
                 <TouchableOpacity
                     style={styles.createBtn}
@@ -178,6 +186,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 10
+    },
+    soundBtn: {
+        position: 'absolute',
+        left: 20,
+        top: 10
     }
 })
 
