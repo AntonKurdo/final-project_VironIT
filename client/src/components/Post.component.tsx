@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, {FC, useState} from 'react';
 import {
     StyleSheet,
     View,
@@ -7,32 +7,34 @@ import {
     ScrollView,
     TouchableOpacity,
     TextInput,
-    Image    
+    Image
 } from 'react-native';
-import { Dimensions, Alert } from 'react-native';
-import { AntDesign, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+import {Dimensions, Alert} from 'react-native';
+import {AntDesign, MaterialCommunityIcons, FontAwesome, Entypo} from '@expo/vector-icons';
 import httpService from '../services/http.service';
-import { useAppContext } from '../context/context';
-import { THEME } from './../../theme';
+import {useAppContext} from '../context/context';
+import {THEME} from './../../theme';
+import {Video} from 'expo-av';
 
 export interface iPost {
     _id : string,
     date : Date,
-    likes : Array<string>,
+    likes : Array < string >,
     title : string,
     text : string,
     picture : string,
-    owner : string    
+    video: string,
+    owner : string
 }
 
 export interface iComment {
     _id?: string,
-    postId: string,
-    userId: string,
-    userName: string,
-    userAva: string,
+    postId : string,
+    userId : string,
+    userName : string,
+    userAva : string,
     date?: Date,
-    text: string
+    text : string
 }
 
 interface props {
@@ -41,126 +43,199 @@ interface props {
 
 export const PostComponent : FC < props > = ({post}) => {
 
-  const {activeUserInfo,  likePostById} = useAppContext(); 
-  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
-  const [isFavorite, setIsFavourite] = useState(post.likes.includes(activeUserInfo.id));
-  const [comments, setComments] = useState([]);
-  const [isCommentsShown, setIsCommentsShown] = useState(false);
-  const [commentText, setCommentText] = useState('');
+    const {activeUserInfo, likePostById} = useAppContext();
+    const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+    const [isFavorite, setIsFavourite] = useState(post.likes.includes(activeUserInfo.id));
+    const [comments, setComments] = useState([]);
+    const [isCommentsShown, setIsCommentsShown] = useState(false);
+    const [commentText, setCommentText] = useState('');
+    const [isMuted, setIsMuted] = useState(true);
 
-  const likeHandler = async (postId: string) => {          
+    const likeHandler = async(postId : string) => {
         setIsBtnDisabled(true);
         const res = await httpService.likePostById(postId, activeUserInfo.id);
-        if(res) {          
-          likePostById!(postId);
-          setIsBtnDisabled(false); 
-          if(isFavorite) {
-              setIsFavourite(false)
-          } else {
-              setIsFavourite(true)
-          }        
+        if (res) {
+            likePostById !(postId);
+            setIsBtnDisabled(false);
+            if (isFavorite) {
+                setIsFavourite(false)
+            } else {
+                setIsFavourite(true)
+            }
         }
-  };
-  
-  const addNewComment = async (postId: string) => {
-    if(commentText) {
-        const newComment: iComment = {
-            postId,
-            userId: activeUserInfo.id,
-            userName: `${activeUserInfo.firstName} ${activeUserInfo.lastName}`,
-            userAva: activeUserInfo.avatar,
-            text: commentText
+    };
+
+    const addNewComment = async(postId : string) => {
+        if (commentText) {
+            const newComment : iComment = {
+                postId,
+                userId: activeUserInfo.id,
+                userName: `${activeUserInfo.firstName} ${activeUserInfo.lastName}`,
+                userAva: activeUserInfo.avatar,
+                text: commentText
+            }
+            await httpService.addNewComment(newComment);
+            setComments(await httpService.getCommentsByPostId(postId))
+            setCommentText('');
+        } else {
+            Alert.alert('Error', 'Comment should not be empty!!!')
         }
-        await httpService.addNewComment(newComment);
+
+    };
+
+    const openComments = async(postId : string) => {
+        if (comments.length == 0) {
+            setComments(await httpService.getCommentsByPostId(postId))
+        }
+        setIsCommentsShown(!isCommentsShown)
+    };
+
+    const refreshComments = async(postId : string) => {
         setComments(await httpService.getCommentsByPostId(postId))
-        setCommentText('');
-    } else {
-        Alert.alert('Error', 'Comment should not be empty!!!')
     }
-
-  };
-
-  const openComments = async (postId: string) => {
-    if(comments.length == 0) {
-       setComments(await httpService.getCommentsByPostId(postId))
-    }
-    setIsCommentsShown(!isCommentsShown)
-  };
-
-  const refreshComments = async (postId: string) => {
-    setComments(await httpService.getCommentsByPostId(postId))
-  }
 
     return (
         <View style={styles.container}>
-            <ImageBackground
-                source={{
-                uri: post.picture
-            }}
-                style={styles.image}>
-                <View style={styles.wrapperTitle}>
-                    <Text style={styles.text}>{post.title}</Text>
-                    <Text style={styles.likesNumber}>{post.likes.length}</Text>
-                    <TouchableOpacity
-                        disabled={isBtnDisabled}
-                        style={styles.btnLike}
-                        onPress={likeHandler.bind(null, post._id)}>
-                        {isFavorite
-                            ? <AntDesign name="heart" size={24} color='#fff'/>
-                            : <AntDesign name="hearto" size={24} color='#fff'/>}
-                    </TouchableOpacity>
-                </View>
-                <ScrollView style={styles.wrapperBody}>
-                    <Text style={styles.bodyText}>{post.text}</Text>
-                </ScrollView>
-            </ImageBackground>
+            {post.picture !== '' 
+                ? (
+                    <ImageBackground
+                        source={{
+                        uri: post.picture
+                    }}
+                        style={styles.image}>
+                        <View style={styles.wrapperTitle}>
+                            <Text style={styles.text}>{post.title}</Text>
+                            <Text style={styles.likesNumber}>{post.likes.length}</Text>
+                            <TouchableOpacity
+                                disabled={isBtnDisabled}
+                                style={styles.btnLike}
+                                onPress={likeHandler.bind(null, post._id)}>
+                                {isFavorite
+                                    ? <AntDesign name="heart" size={24} color='#fff'/>
+                                    : <AntDesign name="hearto" size={24} color='#fff'/>}
+                            </TouchableOpacity>
+                        </View>
+                        <ScrollView style={styles.wrapperBody}>
+                            <Text style={styles.bodyText}>{post.text}</Text>
+                        </ScrollView>
+                    </ImageBackground>
+                ) 
+                : (
+                    <View> 
+                        <Video
+                                source={{
+                                uri: post.video
+                            }}
+                                rate={1.0}
+                                volume={1.0}
+                                isMuted={isMuted}
+                                resizeMode="cover"
+                                shouldPlay
+                                isLooping
+                                style={{
+                                width: '100%',
+                                height: 400
+                            }}/>
+                          <View style={{...styles.wrapperTitle, position: 'absolute', top: 0}}>
+                            <Text style={styles.text}>{post.title}</Text>
+                            <Text style={styles.likesNumber}>{post.likes.length}</Text>
+                            <TouchableOpacity
+                                disabled={isBtnDisabled}
+                                style={styles.btnLike}
+                                onPress={likeHandler.bind(null, post._id)}>
+                                {isFavorite
+                                    ? <AntDesign name="heart" size={24} color='#fff'/>
+                                    : <AntDesign name="hearto" size={24} color='#fff'/>}
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={styles.soundBtn} onPress={() => setIsMuted(!isMuted)}>
+                            {
+                                !isMuted 
+                                    ?  <Entypo name="sound" size={30} color='#fff' />
+                                    :  <Entypo name="sound-mute" size={30} color='#fff' />
+                            }                           
+                        </TouchableOpacity>    
+                        
+                    </View>
+                )
+}
+
             <View style={styles.commentsCont}>
-                <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity style={styles.commentsHeader} onPress={openComments.bind(null, post._id)}>
-                        <Text style={{color: '#fff', fontSize: 17, marginRight: 10}}>comments</Text>
-                    {
-                        isCommentsShown 
-                            ?  <AntDesign name="arrowdown" style={{alignSelf: 'center'}} size={17} color='#fff' />
-                            :  <AntDesign name="arrowup" style={{alignSelf: 'center'}} size={17} color='#fff' />
-                    }
+                <View style={{
+                    flexDirection: 'row'
+                }}>
+                    <TouchableOpacity
+                        style={styles.commentsHeader}
+                        onPress={openComments.bind(null, post._id)}>
+                        <Text
+                            style={{
+                            color: '#fff',
+                            fontSize: 17,
+                            marginRight: 10
+                        }}>comments</Text>
+                        {isCommentsShown
+                            ? <AntDesign
+                                    name="arrowdown"
+                                    style={{
+                                    alignSelf: 'center'
+                                }}
+                                    size={17}
+                                    color='#fff'/>
+                            : <AntDesign
+                                name="arrowup"
+                                style={{
+                                alignSelf: 'center'
+                            }}
+                                size={17}
+                                color='#fff'/>
+}
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.refreshBtn} onPress={refreshComments.bind(null, post._id)}>
-                        <FontAwesome name="refresh" size={24} color='#fff' />
+                    <TouchableOpacity
+                        style={styles.refreshBtn}
+                        onPress={refreshComments.bind(null, post._id)}>
+                        <FontAwesome name="refresh" size={24} color='#fff'/>
                     </TouchableOpacity>
                 </View>
-               
-                {   isCommentsShown &&  comments.length !== 0 
-                    ? comments.map((comment: iComment) => {
-                            return (
-                                <View style={styles.commentWrapper} key={comment._id}> 
-                                    <View style={styles.commentHeader}>
-                                        <Image source={{uri: comment.userAva}} style={styles.ava}/>
-                                        <Text style={styles.commentAuthorName}>{comment.userName}</Text>      
-                                        <Text style={styles.commentDate}>{new Date(post.date).toDateString()}</Text> 
-                                    </View>
-                                    <View style={styles.commentText}> 
-                                        <Text style={{color: '#fff'}}>{comment.text}</Text>
-                                    </View>
+
+                {isCommentsShown && comments.length !== 0
+                    ? comments.map((comment : iComment) => {
+                        return (
+                            <View style={styles.commentWrapper} key={comment._id}>
+                                <View style={styles.commentHeader}>
+                                    <Image
+                                        source={{
+                                        uri: comment.userAva
+                                    }}
+                                        style={styles.ava}/>
+                                    <Text style={styles.commentAuthorName}>{comment.userName}</Text>
+                                    <Text style={styles.commentDate}>{new Date(post.date).toDateString()}</Text>
                                 </View>
-                            )
+                                <View style={styles.commentText}>
+                                    <Text
+                                        style={{
+                                        color: '#fff'
+                                    }}>{comment.text}</Text>
+                                </View>
+                            </View>
+                        )
                     })
-                    : isCommentsShown && <Text style={{color: '#fff', marginLeft: 20}}>There is no comments yet. You can add first!!!</Text> 
-                 
-                }
+                    : isCommentsShown && <Text
+                        style={{
+                        color: '#fff',
+                        marginLeft: 20
+                    }}>There is no comments yet. You can add first!!!</Text>
+}
                 <View>
-                    <TextInput 
+                    <TextInput
                         style={styles.commentInput}
                         multiline={true}
                         placeholder='Text here...'
                         value={commentText}
-                        onChangeText={setCommentText}
-                    />
-                    <TouchableOpacity style={styles.sendCommentBtn} onPress={addNewComment.bind(null, post._id)}>
-                      <MaterialCommunityIcons 
-                        name="telegram" 
-                        size={30} 
-                        color="white" 
-                    />
+                        onChangeText={setCommentText}/>
+                    <TouchableOpacity
+                        style={styles.sendCommentBtn}
+                        onPress={addNewComment.bind(null, post._id)}>
+                        <MaterialCommunityIcons name="telegram" size={30} color="white"/>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -172,7 +247,7 @@ const styles = StyleSheet.create({
     container: {
         minHeight: 470,
         marginVertical: 5,
-        marginHorizontal: 5       
+        marginHorizontal: 5
     },
     image: {
         flex: 1,
@@ -217,15 +292,15 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     commentsCont: {
-        backgroundColor: THEME.MAIN_COLOR,        
+        backgroundColor: THEME.MAIN_COLOR,
         paddingBottom: 10,
         borderBottomRightRadius: 10,
-        borderBottomLeftRadius: 10,
+        borderBottomLeftRadius: 10
     },
     commentsHeader: {
         flexDirection: 'row',
         paddingLeft: 10,
-        paddingVertical: 5        
+        paddingVertical: 5
     },
     commentInput: {
         marginVertical: 5,
@@ -241,48 +316,53 @@ const styles = StyleSheet.create({
     sendCommentBtn: {
         position: 'absolute',
         right: 20,
-        bottom: 7       
+        bottom: 7
     },
     commentWrapper: {
-        width: '95%',       
+        width: '95%',
         alignSelf: 'center',
         borderWidth: 1,
         borderColor: '#fff',
         borderRadius: 10,
         marginBottom: 10
     },
-    commentHeader: {    
+    commentHeader: {
         height: 40,
         width: '100%',
         marginBottom: -5,
         flexDirection: 'row',
-        paddingHorizontal: 20,   
+        paddingHorizontal: 20,
         alignItems: 'center',
         borderBottomColor: '#fff',
         borderBottomWidth: 1
-      },
-      ava: {
+    },
+    ava: {
         width: 25,
         height: 25,
         marginRight: 10
-      },
-      commentAuthorName: {
+    },
+    commentAuthorName: {
         marginRight: 20,
         fontSize: 15,
         color: '#fff'
-      },
-      commentDate: {
+    },
+    commentDate: {
         position: 'absolute',
         right: 10,
         color: '#fff'
-      },
-      commentText: {
-          padding: 10          
-      },
-      refreshBtn: {
+    },
+    commentText: {
+        padding: 10
+    },
+    refreshBtn: {
         position: 'absolute',
         right: 10,
         alignSelf: 'center',
         width: 30
-      }
+    },
+    soundBtn: {
+        position: 'absolute',
+        left: 20,
+        top: 10
+    }
 })

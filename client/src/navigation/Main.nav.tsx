@@ -7,7 +7,7 @@ import { DrawerActions, NavigationContainer, useNavigation } from '@react-naviga
 // SCREENS
 import StartingScreen from '../screens/Starting.screen';
 import SignUpScreen from './../screens/SingUp.screen';
-import LoginScreen from '../screens/LogIn.screen';
+import LoginScreen from '../screens/Login.screen';
 import ProfileDrawer from './Profile.drawer.nav';
 import PostNavigator from './Posts.nav';
 import { useAppContext } from '../context/context';

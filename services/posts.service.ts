@@ -15,12 +15,13 @@ class PostsService {
   
   addNewPost = async (data: any) => {
     try {
-      const { title, text, picture, owner } = data;
+      const { title, text, picture, owner, video } = data;
       const post = new Post({
         title,
         text, 
         picture, 
-        owner
+        owner,
+        video
       });
       await post.save();
       return {message: 'post created'}
