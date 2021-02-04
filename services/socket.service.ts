@@ -2,15 +2,6 @@ export {};
 const Chat = require('../models/chat.model');
 const Message = require('../models/message.model');
 
-interface iMessage {
-  _id: string,
-  date: Date,
-  authorId: string,
-  authorFullName: string,
-  content: string,
-  chatId: string
-};
-
 const socketStart = async (io: any) => {
   try {
     io.on("connection", (socket: any) => {   
