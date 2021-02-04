@@ -6,8 +6,12 @@ import { takeNewAvatar } from './../services/takeNewAvatar.service';
 import httpService from '../services/http.service';
 
 const ProfileScreen: FC = () => {
-  const {activeUserInfo, changeAvatar}  = useAppContext(); 
+  const {activeUserInfo, changeAvatar, setIsLoadingFalse}  = useAppContext(); 
   
+  useEffect(() => {
+    setTimeout(setIsLoadingFalse, 200)
+  }, []) 
+
   const changeAvatarHendler = async () => {
     const newAva = await takeNewAvatar();
     if(newAva) {      

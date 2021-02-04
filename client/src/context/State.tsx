@@ -1,7 +1,7 @@
 import React, {FC,useReducer} from 'react';
 import Context, { iUserData, iUser } from './context';
 import {reducer} from './reducer';
-import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR } from './types';
+import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE } from './types';
 import { iPost } from './../components/Post.component';
 
 export const AppState: FC = ({children}) => {
@@ -17,7 +17,8 @@ export const AppState: FC = ({children}) => {
      friends: [], 
      allUsers: [],
      userPosts: [] ,
-     news: []  
+     news: [],
+     isLoading: false  
   };
 
     const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
@@ -34,6 +35,8 @@ export const AppState: FC = ({children}) => {
     const setNews = (news: Array<iPost>) => dispatch({type: SET_NEWS, news});
     const clearNews = () => dispatch({type: CLEAR_NEWS})
     const changeAvatar = (newAvatar: string) => dispatch({type: CHANGE_AVATAR, newAvatar})
+    const setIsLoadingTrue = () => dispatch({type: SET_IS_LOADING_TRUE})
+    const setIsLoadingFalse = () => dispatch({type: SET_IS_LOADING_FALSE})
 
     return <Context.Provider
         value={{
@@ -42,6 +45,7 @@ export const AppState: FC = ({children}) => {
           allUsers: state.allUsers,
           friends: state.friends,
           news: state.news,
+          isLoading: state.isLoading,
           setActiveUserInfo,
           getUserPosts,
           clearActiveUserInfo,
@@ -53,6 +57,8 @@ export const AppState: FC = ({children}) => {
           addFriend,
           setNews,
           clearNews,
-          changeAvatar   
+          changeAvatar,
+          setIsLoadingTrue,
+          setIsLoadingFalse
     }}>{children}</Context.Provider>
 };

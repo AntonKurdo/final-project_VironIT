@@ -22,6 +22,7 @@ type iContext = {
     allUsers?: Array<iUser>,
     friends?: Array<iUser>,
     news?: Array<iPost>,
+    isLoading?: boolean,
     setActiveUserInfo?: (userData: iUserData) => void
     getUserPosts?: (posts: Array<iPost>) => void,
     clearActiveUserInfo?: () => void,
@@ -33,7 +34,9 @@ type iContext = {
     addFriend?: (friend: iUser) => void,
     setNews?: (news: Array<iPost>) => void, 
     clearNews?: () => void,
-    changeAvatar?: (newAvatar: string) => void
+    changeAvatar?: (newAvatar: string) => void,
+    setIsLoadingTrue?: () => void,
+    setIsLoadingFalse?: () => void
 };
 
 

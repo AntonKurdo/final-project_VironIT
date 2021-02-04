@@ -10,3 +10,5 @@ export const ADD_FRIEND = 'ADD_FRIEND';
 export const SET_NEWS = 'SET_NEWS';
 export const CLEAR_NEWS = 'CLEAR_NEWS';
 export const CHANGE_AVATAR = 'CHANGE_AVATAR';
+export const SET_IS_LOADING_TRUE = 'SET_IS_LOADING_TRUE';
+export const SET_IS_LOADING_FALSE = 'SET_IS_LOADING_FALSE';

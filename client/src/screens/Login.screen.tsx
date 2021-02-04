@@ -21,14 +21,14 @@ const LoginScreen : FC = () => {
     const [secure, setSecure] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
+   
 
     const navigation = useNavigation();
-    const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends, setNews} = useAppContext();
+    const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends, setNews, isLoading, setIsLoadingTrue, setIsLoadingFalse} = useAppContext();
 
     const login = async () => {
         Keyboard.dismiss();
-        setLoading(true);
+        setIsLoadingTrue!();
         const result = await httpService.logIn({email, password});
         setEmail('');
         setPassword('');
@@ -39,15 +39,14 @@ const LoginScreen : FC = () => {
             setAllUsers!(await httpService.getAllUsers());                       
             setUserFriends!(await httpService.getAllFriendsById(result.id)); 
             setNews!(await httpService.getNews(result.id));           
-            navigation.navigate('Profile');
-            setLoading(false);            
+            navigation.navigate('Profile');                        
         } else {
-            setLoading(false);
+            setIsLoadingFalse!();
         }
     }
 
     const googleLog = async() => {
-      setLoading(true);
+      setIsLoadingTrue!();
       const result = await httpService.signUpWithGoogle();
       if (typeof result !== 'boolean' && setActiveUserInfo && result) {
           await setActiveUserInfo(result);
@@ -56,16 +55,15 @@ const LoginScreen : FC = () => {
           setAllUsers && setAllUsers(await httpService.getAllUsers());
           setUserFriends!(await httpService.getAllFriendsById(result.id)); 
           setNews!(await httpService.getNews(result.id));
-          navigation.navigate('Profile');
-          setLoading(false);
+          navigation.navigate('Profile');          
       } else {
-          setLoading(false);
+          setIsLoadingFalse!();
       }
     }
 
-    if (loading) {
+    if (isLoading) {
         return (
-            <View style={styles.container}>
+            <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color={THEME.MAIN_COLOR}/>
             </View>
         )
@@ -143,6 +141,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,        
         paddingTop: '50%'        
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     titleText: {
         color: THEME.MAIN_COLOR,
