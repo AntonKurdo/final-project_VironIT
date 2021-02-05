@@ -15,6 +15,7 @@ import httpService from '../services/http.service';
 import {useNavigation} from '@react-navigation/native';
 import {THEME} from './../../theme';
 import {useAppContext} from '../context/context';
+import { socket } from './CurrentChat.screen';
 
 const LoginScreen : FC = () => {
 
@@ -39,7 +40,8 @@ const LoginScreen : FC = () => {
             setAllUsers!(await httpService.getAllUsers());                       
             setUserFriends!(await httpService.getAllFriendsById(result.id)); 
             setNews!(await httpService.getNews(result.id));           
-            navigation.navigate('Profile');                        
+            navigation.navigate('Profile');       
+            socket.connect();                 
         } else {
             setIsLoadingFalse!();
         }
@@ -55,7 +57,8 @@ const LoginScreen : FC = () => {
           setAllUsers && setAllUsers(await httpService.getAllUsers());
           setUserFriends!(await httpService.getAllFriendsById(result.id)); 
           setNews!(await httpService.getNews(result.id));
-          navigation.navigate('Profile');          
+          navigation.navigate('Profile'); 
+          socket.connect();                          
       } else {
           setIsLoadingFalse!();
       }

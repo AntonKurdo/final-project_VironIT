@@ -12,7 +12,7 @@ import ProfileDrawer from './Profile.drawer.nav';
 import PostNavigator from './Posts.nav';
 import { useAppContext } from '../context/context';
 import { removeTokenInfo } from '../services/asyncStorage.service';
-import CurrentChatScreen from './../screens/CurrentChat.screen';
+import CurrentChatScreen, { socket } from './../screens/CurrentChat.screen';
 
 
 
@@ -40,7 +40,8 @@ function MainNavigator() {
                 clearUserPosts!();
                 clearAllUsers!();
                 clearNews!();
-                await removeTokenInfo();               
+                await removeTokenInfo();     
+                socket.disconnect()     
              }},
               {
                 text: "Cancel",               
