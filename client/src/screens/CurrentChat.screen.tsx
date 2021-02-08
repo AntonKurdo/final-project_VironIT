@@ -11,13 +11,14 @@ export const socket = io('http://192.168.100.2:5000', {
   autoConnect: false
 });
 
-interface iMsg {
+export interface iMsg {
   _id?: string,
   authorFullName: string,
   authorId: string,
   content: string,
   chatId?: string,  
   date: Date
+  type?: string
 }
 
 const CurrentChatScreen : FC = (props: any) => {

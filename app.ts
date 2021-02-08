@@ -14,6 +14,7 @@ const postRouter = require('./routers/posts.router');
 const friendsRouter = require('./routers/friends.router');
 const commentsRouter = require('./routers/comments.router');
 const profileRouter = require('./routers/profile.router');
+const groupChatsRouter = require('./routers/groupChats.router');
 
 const PORT = process.env.PORT || config.get('port');
 
@@ -23,6 +24,7 @@ app.use('/posts', postRouter);
 app.use('/profile', profileRouter)
 app.use('/friends', friendsRouter);
 app.use('/comments', commentsRouter);
+app.use('/groupChats', groupChatsRouter);
 
 (async function startApp() {
   try {

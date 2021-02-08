@@ -6,7 +6,8 @@ const schm = new mongoose.Schema({
   chatId: {type: String, required: true, ref: 'Chat'}, 
   authorId: {type: mongoose.Types.ObjectId, required: true, ref: 'User'},
   authorFullName: {type: String, required: true},
-  date: {type: Date, default: Date.now()}
+  date: {type: Date, default: Date.now()},
+  type: {type: String, default: 'msg'}
 });
 
 module.exports = mongoose.model('Message', schm);

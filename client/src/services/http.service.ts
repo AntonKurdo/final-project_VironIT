@@ -306,6 +306,7 @@ class Http {
             console.log(e);                
         }
     }
+
     changeAvatar = async (userId: string, newAvatar: string) => {
         try {
             const tokenInfo = getTokenInfo && await getTokenInfo();            
@@ -323,6 +324,74 @@ class Http {
                 });                  
                     const json = await res.json();
                     Alert.alert('Attention', json.message)                                          
+            }    
+            return false     
+        } catch(e) {
+            console.log(e);                
+        }
+    }
+
+    getGroupChatsById = async (id: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/groupChats/${id}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`                        
+                    }                   
+                });                  
+                    const json = await res.json();
+                    return json;                            
+            }          
+        } catch(e) {
+            console.log(e);   
+            return [];             
+        }
+    }
+
+    addGroupChat = async (groupChatObj: any) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {                
+                const res = await fetch(`${this.URL}/groupChats`, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(groupChatObj)
+                });                  
+                    const json = await res.json();
+                    Alert.alert('Attention', json.message);
+                    if(json.message === 'Groupchat has been created...') {
+                        Alert.alert('Attention', json.message);
+                        return true;
+                    } else {
+                        Alert.alert('Error', 'Something wend wrong...');
+                        return false;
+                    }                                    
+            }    
+            return false     
+        } catch(e) {
+            console.log(e);                
+        }
+    }
+
+    leftChat = async (leftData: {chatId: string, userId: string, userLastName: string}) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {                
+                const res = await fetch(`${this.URL}/groupChats/leftChat`, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(leftData)
+                });                  
+                    const json = await res.json();   
+                    return true;                                                  
             }    
             return false     
         } catch(e) {

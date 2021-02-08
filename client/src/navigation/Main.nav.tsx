@@ -13,6 +13,7 @@ import PostNavigator from './Posts.nav';
 import { useAppContext } from '../context/context';
 import { removeTokenInfo } from '../services/asyncStorage.service';
 import CurrentChatScreen, { socket } from './../screens/CurrentChat.screen';
+import CurrentGroupChatScreen from './../screens/CurrentGroupChat.screen';
 
 
 
@@ -89,6 +90,7 @@ function MainNavigator() {
                     })}/> 
                     <Stack.Screen name="Posts" component={PostNavigator} options={routesStyling}/>   
                     <Stack.Screen name="Current chat" component={CurrentChatScreen} options={routesStyling}/>   
+                    <Stack.Screen name="Group chat" component={CurrentGroupChatScreen} options={routesStyling}/>   
             </Stack.Navigator>
         </NavigationContainer>
     );

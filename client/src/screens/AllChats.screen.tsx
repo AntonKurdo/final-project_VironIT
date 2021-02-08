@@ -6,17 +6,18 @@ import { AntDesign } from '@expo/vector-icons';
 import {THEME} from './../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { useAppContext } from './../context/context';
+import { AppModal } from '../components/AddNewGroupChatModal';
 
 const AllChatsScreen: FC = () => {
 
   const navigation = useNavigation();
-  const { friends } = useAppContext();
+  const { friends, openModal, userGroupChats } = useAppContext();
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>
-                    All my chats
+                   Personal chats
                 </Text>
             </View>
             <ScrollView style={styles.chatsWrapper}>
@@ -38,7 +39,33 @@ const AllChatsScreen: FC = () => {
                   })
                 }
             </ScrollView>
-
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>
+                    Group chats
+                </Text>
+                <TouchableOpacity style={styles.addGroupChatBtn} onPress={openModal}>
+                  <AntDesign name="addusergroup" size={27} color="gray" />
+                </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.chatsWrapper}>
+                {
+                  userGroupChats!.map((chat: any) => {
+                    return (
+                      <View style={styles.chat} key={chat._id} >
+                        <Image source={require('../../assets/group-chat-image.png')} style={styles.ava}/>
+                        <Text> {chat.usersLastNames.join(', ')} </Text>
+                        <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('Group chat', {
+                          id: chat._id,                          
+                          lastNames: chat.usersLastNames.join(', ')
+                        })}>
+                            <AntDesign name="message1" size={25} color={THEME.MAIN_COLOR} />
+                        </TouchableOpacity>                    
+                      </View>
+                    )
+                  })
+                }
+            </ScrollView>
+            <AppModal />
         </View>
     )
 };
@@ -83,6 +110,10 @@ const styles = StyleSheet.create({
       position: 'absolute',
       right: 15
     },
+    addGroupChatBtn: {
+      position: 'absolute',
+      right: 25
+    }
 })
 
 export default AllChatsScreen;

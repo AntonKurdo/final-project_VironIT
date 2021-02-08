@@ -23,6 +23,8 @@ type iContext = {
     friends?: Array<iUser>,
     news?: Array<iPost>,
     isLoading?: boolean,
+    isModalOpen?: boolean,
+    userGroupChats?: Array<any>
     setActiveUserInfo?: (userData: iUserData) => void
     getUserPosts?: (posts: Array<iPost>) => void,
     clearActiveUserInfo?: () => void,
@@ -36,7 +38,12 @@ type iContext = {
     clearNews?: () => void,
     changeAvatar?: (newAvatar: string) => void,
     setIsLoadingTrue?: () => void,
-    setIsLoadingFalse?: () => void
+    setIsLoadingFalse?: () => void,
+    openModal?: () => void,
+    closeModal?: () => void,
+    setUserGroupChat?: (groupChats: Array<any>) => void,
+    clearUserGroupChat?: () => void,
+    leftChat?: (chatId: string) => void
 };
 
 
