@@ -15,16 +15,20 @@ const friendsRouter = require('./routers/friends.router');
 const commentsRouter = require('./routers/comments.router');
 const profileRouter = require('./routers/profile.router');
 const groupChatsRouter = require('./routers/groupChats.router');
+const personalChatsRouter = require('./routers/personalChats.router')
 
 const PORT = process.env.PORT || config.get('port');
 
 app.use(bodyParser.json());
+
+//ROUTERS 
 app.use('/', authRouter);
 app.use('/posts', postRouter);
 app.use('/profile', profileRouter)
 app.use('/friends', friendsRouter);
 app.use('/comments', commentsRouter);
 app.use('/groupChats', groupChatsRouter);
+app.use('/personalChats', personalChatsRouter);
 
 (async function startApp() {
   try {

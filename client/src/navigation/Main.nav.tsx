@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import { Entypo, Feather } from '@expo/vector-icons';
 import {THEME} from './../../theme';
 import { DrawerActions, NavigationContainer, useNavigation } from '@react-navigation/native';
+
 // SCREENS
 import StartingScreen from '../screens/Starting.screen';
 import SignUpScreen from './../screens/SingUp.screen';
@@ -28,7 +29,7 @@ const Stack = createStackNavigator();
 
 function MainNavigator() {
 
-    const {activeUserInfo, clearActiveUserInfo, clearUserPosts, clearAllUsers, clearNews} = useAppContext();
+    const {activeUserInfo, clearActiveUserInfo, clearUserPosts, clearAllUsers, clearNews, clearUserPersonalChat} = useAppContext();
 
     const logout = (nav: any) => {
         Alert.alert(
@@ -41,6 +42,7 @@ function MainNavigator() {
                 clearUserPosts!();
                 clearAllUsers!();
                 clearNews!();
+                clearUserPersonalChat!();
                 await removeTokenInfo();     
                 socket.disconnect()     
              }},

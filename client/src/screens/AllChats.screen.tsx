@@ -11,7 +11,7 @@ import { AppModal } from '../components/AddNewGroupChatModal';
 const AllChatsScreen: FC = () => {
 
   const navigation = useNavigation();
-  const { friends, openModal, userGroupChats } = useAppContext();
+  const { openModal, userGroupChats, userPersonalChats } = useAppContext();
 
     return (
         <View style={styles.container}>
@@ -22,7 +22,7 @@ const AllChatsScreen: FC = () => {
             </View>
             <ScrollView style={styles.chatsWrapper}>
                 {
-                  friends!.map((chat: any) => {
+                  userPersonalChats!.map((chat: any) => {
                     return (
                       <View style={styles.chat} key={chat.id} >
                       <Image source={{uri: chat.avatar}} style={styles.ava}/>

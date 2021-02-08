@@ -423,6 +423,25 @@ class Http {
             console.log(e);                
         }
     }
+
+    getAllChatsById = async (id: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/personalChats/${id}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`                        
+                    }                   
+                });                  
+                    const json = await res.json();
+                    return json;                            
+            }          
+        } catch(e) {
+            console.log(e);   
+            return [];             
+        }
+    }
 }
 
 export default new Http();

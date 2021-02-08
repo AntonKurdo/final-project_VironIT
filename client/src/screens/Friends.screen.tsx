@@ -19,10 +19,10 @@ interface iCandidate {
 }
 const FriendsScreen: FC = () => {
 
-  const  {activeUserInfo, friends, allUsers, addFriend, removeFriend, setNews} = useAppContext();
+  const {activeUserInfo, friends, allUsers, addFriend, removeFriend, setNews} = useAppContext();
   const [searchingText, setSearchingText] = useState('');
   const [candidates, setCandidates] = useState<iCandidate[]>([]);
-  const [isAllCandidates, setIsAllCandidates] = useState(false);
+  const [isAllCandidates, setIsAllCandidates] = useState(false); 
 
   const searchFriend = (name: string) => {    
     let currentCandidates = allUsers!.filter((candidate: any) => (candidate.firstName.toLowerCase() + ' ' + candidate.lastName.toLowerCase()).includes(name.toLowerCase()));   

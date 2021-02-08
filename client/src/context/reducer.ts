@@ -1,4 +1,4 @@
-import { SET_ACTIVE_USER_INFO, GET_USER_POSTS, CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND } from "./types";
+import { SET_ACTIVE_USER_INFO, GET_USER_POSTS, CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND, SET_USER_PERSONAL_CHATS, CLEAR_USER_PERSONAL_CHATS } from "./types";
 import { iPost } from './../components/Post.component';
 import { iUser } from "./context";
 
@@ -86,6 +86,12 @@ export const reducer = (state: any, action: any) => {
      
     case LEFT_GROUP_CHAT: 
       return {...state, userGroupChats: state.userGroupChats.filter((chat: any) => chat._id !== action.chatId)} 
+
+    case SET_USER_PERSONAL_CHATS:
+        return {...state, userPersonalChats: action.personalChats}    
+  
+    case CLEAR_USER_PERSONAL_CHATS:
+        return {...state, userPersonalChats: []}       
 
     default: 
       return state;
