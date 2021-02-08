@@ -9,6 +9,6 @@ const router = Router();
 router
   .get('/:id', authMiddleware, controller.getGroupChatsById)
   .post('/', authMiddleware, controller.addGroupChat)
-  .post('/leftChat', controller.leftChat)
+  .post('/leftChat', authMiddleware, controller.leftChat)
 
 module.exports = router; 
