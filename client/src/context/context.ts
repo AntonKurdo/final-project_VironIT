@@ -34,6 +34,7 @@ type iContext = {
     clearAllUsers?: () => void,
     setUserFriends?: (friends: Array<iUser>) => void,
     addFriend?: (friend: iUser) => void,
+    removeFriend?: (friend: string) => void,
     setNews?: (news: Array<iPost>) => void, 
     clearNews?: () => void,
     changeAvatar?: (newAvatar: string) => void,

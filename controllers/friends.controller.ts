@@ -20,6 +20,9 @@ class FriendsController {
   addFriend = async (req: Request, res: Response) => {    
     res.send(await this.service.addFriend(req.body))
   }
+  removeFriend = async (req: Request, res: Response) => {    
+    res.send(await this.service.removeFriend(req.body))
+  }
 
 }
 

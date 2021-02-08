@@ -9,5 +9,6 @@ router
   .get('/allUsers', authMiddleware, controller.getAllUsers)
   .get('/allFriends/:id', authMiddleware, controller.getAllFriendsByUserId)
   .put('/addFriend', authMiddleware, controller.addFriend)
+  .put('/removeFriend', authMiddleware, controller.removeFriend)
 
 module.exports = router;

@@ -40,7 +40,7 @@ class FriendsService {
     }
   }
 
-  addFriend = async ({userId, newFriendId}: any) => {
+  addFriend = async ({userId, newFriendId}: {userId: string, newFriendId: string}) => {
     try {
       const user = await User.findOne({_id: userId}); 
       const alreadyFriend = user.friends.indexOf(newFriendId);   
@@ -50,6 +50,20 @@ class FriendsService {
       } else {            
         return {message: 'You are already friends...'}
       }     
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
+  removeFriend = async ({userId, friendId}: {userId: string, friendId: string}) => {
+    try {
+      const user = await User.findById(userId);
+      const removingFriend = await User.findById(friendId);
+      await User.updateOne({_id: userId}, {friends: user.friends.filter((friend: string) => friend != friendId)})
+      return {
+        status: 'ok',
+        message: `${removingFriend.first_name} ${removingFriend.last_name} has been removed from Your friends...`
+      }
     } catch(e) {
       console.log(e)
     }

@@ -1,7 +1,7 @@
 import React, {FC,useReducer} from 'react';
 import Context, { iUserData, iUser } from './context';
 import {reducer} from './reducer';
-import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT } from './types';
+import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND } from './types';
 import { iPost } from './../components/Post.component';
 import { iMember } from './../components/AddNewGroupChatModal';
 
@@ -35,6 +35,7 @@ export const AppState: FC = ({children}) => {
     const clearAllUsers = () => dispatch({type: CLEAR_ALL_USERS});
     const setUserFriends = (friends: Array<iUser>) => dispatch({type: SET_USER_FRIENDS, friends});
     const addFriend = (friend: iUser) => dispatch({type: ADD_FRIEND, friend});
+    const removeFriend = (friendId: string) => dispatch({type: REMOVE_FRIEND, friendId});
     const setNews = (news: Array<iPost>) => dispatch({type: SET_NEWS, news});
     const clearNews = () => dispatch({type: CLEAR_NEWS})
     const changeAvatar = (newAvatar: string) => dispatch({type: CHANGE_AVATAR, newAvatar})
@@ -65,6 +66,7 @@ export const AppState: FC = ({children}) => {
           clearAllUsers,
           setUserFriends,
           addFriend,
+          removeFriend,
           setNews,
           clearNews,
           changeAvatar,

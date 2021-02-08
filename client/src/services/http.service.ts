@@ -244,6 +244,31 @@ class Http {
         }
     }
 
+    removeFriend = async (userId: string, friendId: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/friends/removeFriend`, {
+                    method: "PUT",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({userId, friendId})
+                });                  
+                    const json = await res.json();
+                    if(json.status === 'ok') {   
+                        Alert.alert('Success!', json.message)                     
+                        return true;
+                    }                    
+                    return false;                  
+            }    
+            return false     
+        } catch(e) {
+            console.log(e);                
+        }
+    }
+
     getNews = async (id: string) => {
         try {
             const tokenInfo = getTokenInfo && await getTokenInfo();            

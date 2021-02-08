@@ -4,6 +4,12 @@ import { EvilIcons, Entypo, AntDesign } from '@expo/vector-icons';
 import { THEME } from './../../theme';
 import { useAppContext } from '../context/context';
 import httpService from '../services/http.service';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 interface iCandidate {
   id: string,
@@ -13,7 +19,7 @@ interface iCandidate {
 }
 const FriendsScreen: FC = () => {
 
-  const  {activeUserInfo, friends, allUsers, addFriend, setNews} = useAppContext();
+  const  {activeUserInfo, friends, allUsers, addFriend, removeFriend, setNews} = useAppContext();
   const [searchingText, setSearchingText] = useState('');
   const [candidates, setCandidates] = useState<iCandidate[]>([]);
   const [isAllCandidates, setIsAllCandidates] = useState(false);
@@ -95,7 +101,26 @@ const FriendsScreen: FC = () => {
                     <Image source={{uri: friend.avatar}} style={styles.ava}/>
                     <Text>{friend.firstName} {friend.lastName}</Text>                    
                     <TouchableOpacity style={styles.chatBtn}>
-                      <AntDesign name="message1" size={28} color={THEME.MAIN_COLOR} />
+                      <Menu>
+                        <MenuTrigger>
+                          <Entypo name="dots-three-vertical" size={24} color={THEME.MAIN_COLOR} />
+                        </MenuTrigger>
+                        <MenuOptions>                          
+                          <MenuOption onSelect={async() => {
+                            try {
+                               await httpService.removeFriend(activeUserInfo.id, friend.id);
+                               removeFriend!(friend.id)
+                            } catch (e) {
+                              console.log(e)
+                            }                           
+                          }} >
+                            <Text style={{fontSize: 20, color: 'red'}}>Delete</Text>
+                          </MenuOption>
+                          <MenuOption onSelect={() => alert(`Delete`)} >                            
+                            <Text style={{fontSize: 20}}>Open Chat</Text>
+                          </MenuOption>
+                        </MenuOptions>
+                      </Menu>                    
                     </TouchableOpacity>
                   </View>
                 )
