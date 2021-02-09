@@ -431,7 +431,7 @@ class Http {
                 const res = await fetch(`${this.URL}/personalChats/${id}`, {
                     method: "GET",
                     headers: {
-                        'Authorization': `Bearer ${tokenInfo.accessToken}`                        
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`                                              
                     }                   
                 });                  
                     const json = await res.json();
@@ -441,6 +441,35 @@ class Http {
             console.log(e);   
             return [];             
         }
+    }
+
+    addNewPersonalChatToUser = async (userId: string, secondUserId: string) => {
+        try {
+            
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/personalChats`, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        secondUserId
+                    })                   
+                });                  
+                    const json = await res.json();
+                    if(json.status === 'ok') {
+                        return true
+                    } else {
+                        return false
+                    }                       
+            }          
+        } catch(e) {
+            console.log(e);   
+            return false;             
+        } 
     }
 }
 

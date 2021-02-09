@@ -25,5 +25,25 @@ class PersonalChatsService {
     }
   };
   
+  addNewPersonalChatToUser = async (userId: string, secondUserId: string) => {   
+    try {
+      const newChatId = `${userId}${secondUserId}`;
+      const firstUser = await User.findById(userId);
+      if(firstUser.personal_chats.includes(newChatId) || firstUser.personal_chats.includes(`${secondUserId}${userId}`)) {        
+        return {
+          status: 'ok'        
+        }
+      } else {
+        await User.updateOne({_id: [userId]}, {$push: {personal_chats: newChatId}})
+        await User.updateOne({_id: [secondUserId]}, {$push: {personal_chats: newChatId}})
+        return {
+          status: 'ok'        
+        }
+      }     
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  
 }
 module.exports = PersonalChatsService;

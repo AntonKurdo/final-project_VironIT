@@ -7,8 +7,8 @@ const controller = new PersonalChatsController();
 const router = Router();
 
 router
-  .get('/:id', controller.getChatsById)
-  
+  .get('/:id', authMiddleware, controller.getChatsById)
+  .post('/', controller.addNewPersonalChatToUser)
  
 
 module.exports = router; 
