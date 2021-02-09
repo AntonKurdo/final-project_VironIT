@@ -5,8 +5,7 @@ const GroupChat = require('../models/groupChat.model');
 
 const socketStart = async (io: any) => {
   try {
-    io.on("connection", (socket: any) => {   
-      console.log('connected')
+    io.on("connection", (socket: any) => {      
 
       socket.on('open chat', async (fromId: string, toId: string) => {    
         try {
@@ -74,8 +73,7 @@ const socketStart = async (io: any) => {
           console.log(e);
         }       
       });
-
-      socket.on('disconnect', () => console.log('disconnected')); 
+     
     });
   } catch(e) {
     console.log(e)

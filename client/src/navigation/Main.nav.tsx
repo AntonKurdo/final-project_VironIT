@@ -3,7 +3,7 @@ import { Alert, TouchableOpacity } from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import { Entypo, Feather } from '@expo/vector-icons';
 import {THEME} from './../../theme';
-import { DrawerActions, NavigationContainer, useNavigation } from '@react-navigation/native';
+import { DrawerActions, NavigationContainer } from '@react-navigation/native';
 
 // SCREENS
 import StartingScreen from '../screens/Starting.screen';
@@ -16,8 +16,6 @@ import { removeTokenInfo } from '../services/asyncStorage.service';
 import CurrentChatScreen, { socket } from './../screens/CurrentChat.screen';
 import CurrentGroupChatScreen from './../screens/CurrentGroupChat.screen';
 
-
-
 const routesStyling = {
     headerStyle: {
         backgroundColor: THEME.MAIN_COLOR
@@ -29,7 +27,7 @@ const Stack = createStackNavigator();
 
 function MainNavigator() {
 
-    const {activeUserInfo, clearActiveUserInfo, clearUserPosts, clearAllUsers, clearNews, clearUserPersonalChat} = useAppContext();
+    const {activeUserInfo, clearActiveUserInfo, clearUserPosts, clearAllUsers, clearNews, clearUserPersonalChat, clearUserArchivedChat} = useAppContext();
 
     const logout = (nav: any) => {
         Alert.alert(
@@ -43,6 +41,7 @@ function MainNavigator() {
                 clearAllUsers!();
                 clearNews!();
                 clearUserPersonalChat!();
+                clearUserArchivedChat!();
                 await removeTokenInfo();     
                 socket.disconnect()     
              }},

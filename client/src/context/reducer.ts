@@ -1,4 +1,4 @@
-import { SET_ACTIVE_USER_INFO, GET_USER_POSTS, CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND, SET_USER_PERSONAL_CHATS, CLEAR_USER_PERSONAL_CHATS } from "./types";
+import { SET_ACTIVE_USER_INFO, GET_USER_POSTS, CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND, SET_USER_PERSONAL_CHATS, CLEAR_USER_PERSONAL_CHATS, SET_USER_ARCHIVED_CHATS, CLEAR_USER_ARCHIVED_CHATS, ARCHIVE_CHAT, UNARCHIVE_CHAT } from "./types";
 import { iPost } from './../components/Post.component';
 import { iUser } from "./context";
 
@@ -91,7 +91,27 @@ export const reducer = (state: any, action: any) => {
         return {...state, userPersonalChats: action.personalChats}    
   
     case CLEAR_USER_PERSONAL_CHATS:
-        return {...state, userPersonalChats: []}       
+        return {...state, userPersonalChats: []}     
+
+    case SET_USER_ARCHIVED_CHATS:
+        return {...state, userArchivedChats: action.archivedChats}    
+  
+    case CLEAR_USER_ARCHIVED_CHATS:
+        return {...state, userArchivedChats: []}    
+        
+    case ARCHIVE_CHAT:
+        return {
+          ...state, 
+          userPersonalChats: state.userPersonalChats.filter((chat: any) => chat.chat_id !== action.chat.chat_id),
+          userArchivedChats: [...state.userArchivedChats, action.chat ]
+        }     
+
+    case UNARCHIVE_CHAT:
+        return {
+          ...state, 
+          userArchivedChats: state.userArchivedChats.filter((chat: any) => chat.chat_id !== action.chat.chat_id),
+          userPersonalChats: [...state.userPersonalChats, action.chat ]
+        }     
 
     default: 
       return state;

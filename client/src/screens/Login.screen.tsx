@@ -25,7 +25,7 @@ const LoginScreen : FC = () => {
    
 
     const navigation = useNavigation();
-    const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends, setNews, isLoading, setIsLoadingTrue, setIsLoadingFalse, setUserGroupChat, setUserPersonalChat} = useAppContext();
+    const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends, setNews, isLoading, setIsLoadingTrue, setIsLoadingFalse, setUserGroupChat, setUserPersonalChat, setUserArchivedChat} = useAppContext();
 
     const login = async () => {
         Keyboard.dismiss();
@@ -42,6 +42,7 @@ const LoginScreen : FC = () => {
             setNews!(await httpService.getNews(result.id)); 
             setUserPersonalChat!(await httpService.getAllChatsById(result.id));
             setUserGroupChat!(await httpService.getGroupChatsById(result.id));
+            setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));
             navigation.navigate('Profile');       
             socket.connect();                 
         } else {
@@ -61,6 +62,7 @@ const LoginScreen : FC = () => {
           setNews!(await httpService.getNews(result.id));
           setUserPersonalChat!(await httpService.getAllChatsById(result.id));
           setUserGroupChat!(await httpService.getGroupChatsById(result.id));
+          setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));
           navigation.navigate('Profile'); 
           socket.connect();                          
       } else {

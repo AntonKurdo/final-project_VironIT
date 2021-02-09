@@ -26,6 +26,7 @@ type iContext = {
     isModalOpen?: boolean,
     userGroupChats?: Array<any>
     userPersonalChats?: Array<any>
+    userArchivedChats?: Array<any>
     setActiveUserInfo?: (userData: iUserData) => void
     getUserPosts?: (posts: Array<iPost>) => void,
     clearActiveUserInfo?: () => void,
@@ -48,6 +49,10 @@ type iContext = {
     leftChat?: (chatId: string) => void,
     setUserPersonalChat?: (personalChats: Array<any>) => void,
     clearUserPersonalChat?: () => void,
+    setUserArchivedChat?: (archivedChats: Array<any>) => void,
+    clearUserArchivedChat?: () => void,
+    archiveChat?: (chat: any) => void, 
+    unarchiveChat?: (chat: any) => void 
 };
 
 export const useAppContext = () => useContext(AppContext); 

@@ -1,7 +1,7 @@
 import React, {FC,useReducer} from 'react';
 import Context, { iUserData, iUser } from './context';
 import {reducer} from './reducer';
-import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND, CLEAR_USER_PERSONAL_CHATS, SET_USER_PERSONAL_CHATS } from './types';
+import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND, CLEAR_USER_PERSONAL_CHATS, SET_USER_PERSONAL_CHATS, SET_USER_ARCHIVED_CHATS, CLEAR_USER_ARCHIVED_CHATS, ARCHIVE_CHAT, UNARCHIVE_CHAT } from './types';
 import { iPost } from './../components/Post.component';
 import { iMember } from './../components/AddNewGroupChatModal';
 
@@ -20,6 +20,7 @@ export const AppState: FC = ({children}) => {
      userPosts: [],
      userGroupChats: [],
      userPersonalChats: [],
+     userArchivedChats: [],
      news: [],
      isLoading: false,
      isModalOpen: false  
@@ -49,7 +50,10 @@ export const AppState: FC = ({children}) => {
     const leftChat = (chatId: string) => dispatch({type: LEFT_GROUP_CHAT, chatId});
     const setUserPersonalChat = (personalChats: Array<any>) => dispatch({type: SET_USER_PERSONAL_CHATS, personalChats});
     const clearUserPersonalChat = () => dispatch({type: CLEAR_USER_PERSONAL_CHATS});
-   
+    const setUserArchivedChat = (archivedChats: Array<any>) => dispatch({type: SET_USER_ARCHIVED_CHATS, archivedChats});
+    const clearUserArchivedChat = () => dispatch({type: CLEAR_USER_ARCHIVED_CHATS});
+    const archiveChat = (chat: any) => dispatch({type: ARCHIVE_CHAT, chat});
+    const unarchiveChat = (chat: any) => dispatch({type: UNARCHIVE_CHAT, chat});
 
     return <Context.Provider
         value={{
@@ -62,6 +66,7 @@ export const AppState: FC = ({children}) => {
           isModalOpen: state.isModalOpen,
           userGroupChats: state.userGroupChats,
           userPersonalChats: state.userPersonalChats,
+          userArchivedChats: state.userArchivedChats,
           setActiveUserInfo,
           getUserPosts,
           clearActiveUserInfo,
@@ -83,6 +88,10 @@ export const AppState: FC = ({children}) => {
           clearUserGroupChat,
           leftChat,
           setUserPersonalChat,
-          clearUserPersonalChat
+          clearUserPersonalChat,
+          setUserArchivedChat,
+          clearUserArchivedChat,
+          archiveChat,
+          unarchiveChat
     }}>{children}</Context.Provider>
 };

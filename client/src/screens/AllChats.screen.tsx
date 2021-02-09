@@ -1,17 +1,18 @@
 import React, {FC} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 
 import {THEME} from './../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { useAppContext } from './../context/context';
 import { AppModal } from '../components/AddNewGroupChatModal';
+import httpService from '../services/http.service';
 
 const AllChatsScreen: FC = () => {
 
   const navigation = useNavigation();
-  const { openModal, userGroupChats, userPersonalChats } = useAppContext();
+  const { activeUserInfo, openModal, userGroupChats, userPersonalChats, archiveChat } = useAppContext();
 
     return (
         <View style={styles.container}>
@@ -33,7 +34,14 @@ const AllChatsScreen: FC = () => {
                         fullName: `${chat.firstName} ${chat.lastName}`
                       })}>
                           <AntDesign name="message1" size={25} color={THEME.MAIN_COLOR} />
-                      </TouchableOpacity>                    
+                      </TouchableOpacity>  
+                      <TouchableOpacity style={styles.archiveBtn} onPress={async () => {
+                        if(await httpService.archiveChat(activeUserInfo.id, chat.chat_id)) {
+                          archiveChat!(chat)
+                        }
+                      }}>
+                          <MaterialIcons name="archive" size={30} color={THEME.MAIN_COLOR} />
+                      </TouchableOpacity>                     
                     </View>
                     )
                   })
@@ -109,6 +117,10 @@ const styles = StyleSheet.create({
     chatBtn: {
       position: 'absolute',
       right: 15
+    },
+    archiveBtn: {
+      position: 'absolute',
+      right: 50
     },
     addGroupChatBtn: {
       position: 'absolute',

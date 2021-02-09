@@ -1,25 +1,30 @@
-import { Z_FILTERED } from "zlib";
-
 export {};
 const Chat = require('../models/chat.model');
 const User = require('../models/user.model');
+const { mapAsync } = require('lodasync');
 
 class PersonalChatsService {
 
   getChatsById = async (id: string) => {    
     try {      
-      const user = await User.findById(id);      
-      const chats = await Chat.find({_id: user.personal_chats});      
+      const user = await User.findById(id);
+      const chats = await Chat.find({_id: user.personal_chats})
       const ids = chats.map((item: any) => {
-        return item.usersId.filter((uid: string) =>  uid != id)[0]
-      });
-      const chatsInfo = await User.find({_id: ids});
-      return chatsInfo.map((user: any) => ({
-        id: user._id,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        avatar: user.avatar 
-      }));     
+        return {
+          userId: item.usersId.filter((uid: string) =>  uid != id)[0],
+          chatId:item._id
+        }
+      }); 
+      return await mapAsync(async(el: any) => {
+        const user = await User.findById(el.userId);
+        return {
+          id: user._id,      
+          chat_id: el.chatId,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          avatar: user.avatar 
+        }
+      }, ids)          
     } catch(e) {
       console.log(e)
     }

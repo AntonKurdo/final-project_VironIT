@@ -9,7 +9,8 @@ const schm = new mongoose.Schema({
   avatar: {type: String, default: 'https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png'},  
   friends : [{type: mongoose.Types.ObjectId, required: true, ref: 'User'}],
   personal_chats: [{type: String, ref: 'Chat'}],
-  groupChats: [{type: String, unique: true, required: true, ref: 'GroupChat'}]
+  groupChats: [{type: String, unique: true, required: true, ref: 'GroupChat'}],
+  archived_chats: [{type: String, unique: true, required: true}]
 });
 
 module.exports = mongoose.model('User', schm); 

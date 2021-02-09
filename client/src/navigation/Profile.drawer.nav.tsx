@@ -7,6 +7,7 @@ import { THEME } from './../../theme';
 import FriendsScreen from '../screens/Friends.screen';
 import NewsScreen from '../screens/News.screen';
 import AllChatsScreen from '../screens/AllChats.screen';
+import ChatsTabNav from './Chats.tab.nav';
 const Drawer = createDrawerNavigator();
 
 function ProfileDrawer() {
@@ -33,7 +34,7 @@ function ProfileDrawer() {
             />
             <Drawer.Screen 
               name="Chats" 
-              component={AllChatsScreen}
+              component={ChatsTabNav}
               options={{
                 drawerIcon: (props) => <MaterialIcons name="message" size={24} color={props.color} />
               }}

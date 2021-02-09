@@ -444,8 +444,7 @@ class Http {
     }
 
     addNewPersonalChatToUser = async (userId: string, secondUserId: string) => {
-        try {
-            
+        try {            
             const tokenInfo = getTokenInfo && await getTokenInfo();            
             if(tokenInfo && typeof tokenInfo !== 'boolean') {
                 const res = await fetch(`${this.URL}/personalChats`, {
@@ -470,6 +469,77 @@ class Http {
             console.log(e);   
             return false;             
         } 
+    }
+
+    
+    getAllArchivedChatsById = async (id: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/archivedChats/${id}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`                                              
+                    }                   
+                });                  
+                const json = await res.json();
+                return json;                            
+            }          
+        } catch(e) {
+            console.log(e);   
+            return [];             
+        }
+    }
+
+    archiveChat = async (userId: string, chatId: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/archivedChats/archive`, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json'                                               
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        chatId
+                    })                   
+                });                  
+                const json = await res.json();
+                if(json.status === 'ok') {
+                    return true;
+                }                         
+            }          
+        } catch(e) {
+            console.log(e);   
+            return false;             
+        }
+    }
+    unarchiveChat = async (userId: string, chatId: string) => {
+        try {
+            const tokenInfo = getTokenInfo && await getTokenInfo();            
+            if(tokenInfo && typeof tokenInfo !== 'boolean') {
+                const res = await fetch(`${this.URL}/archivedChats/unarchive`, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${tokenInfo.accessToken}`,
+                        'Content-Type': 'application/json'                                               
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        chatId
+                    })                   
+                });                  
+                const json = await res.json();
+                if(json.status === 'ok') {
+                    return true;
+                }                         
+            }          
+        } catch(e) {
+            console.log(e);   
+            return false;             
+        }
     }
 }
 
