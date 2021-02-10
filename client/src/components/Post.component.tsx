@@ -339,7 +339,8 @@ const styles = StyleSheet.create({
     ava: {
         width: 25,
         height: 25,
-        marginRight: 10
+        marginRight: 10,
+        borderRadius: 12.5
     },
     commentAuthorName: {
         marginRight: 20,

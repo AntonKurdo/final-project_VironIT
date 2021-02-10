@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
   ava: {
     width: 40,
     height: 40,
+    borderRadius: 20,
     marginRight: 15
   },
   chatBtn: {

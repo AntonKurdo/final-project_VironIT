@@ -46,9 +46,15 @@ class FriendsService {
       const alreadyFriend = user.friends.indexOf(newFriendId);   
       if(alreadyFriend === -1) {
         await User.updateOne({_id: userId}, {friends: [...user.friends, newFriendId]});       
-        return {message: 'New friend was added...'}
+        return {
+          status: 'ok',
+          message: 'New friend was added...'
+        }
       } else {            
-        return {message: 'You are already friends...'}
+        return {
+          status: 'error',
+          message: 'You are already friends...'
+        }
       }     
     } catch(e) {
       console.log(e)

@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
   ava: {
     width: 40,
     height: 40,
-    marginRight: 15
+    marginRight: 15,
+    borderRadius: 20
   },
   postAuthorName: {
     marginRight: 20,

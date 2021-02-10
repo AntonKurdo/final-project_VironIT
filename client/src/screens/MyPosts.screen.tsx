@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 22,
-    color: 'gray'
+    color: 'lightgray'
   }
 })
 

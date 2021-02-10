@@ -59,9 +59,9 @@ export const AppModal : FC = () => {
                 {
                   friends!.map((friend: any) => {
                     return (
-                      <TouchableOpacity style={!changed.includes(friend.id) ? styles.wrapper : {...styles.wrapper, backgroundColor: 'lightgray'}} key={friend.id} onPress={addFriendToNewChat.bind(null, friend.id, friend.firstName, friend.lastName)}>
+                      <TouchableOpacity style={!changed.includes(friend.id) ? styles.wrapper : {...styles.wrapper, backgroundColor: THEME.MAIN_COLOR}} key={friend.id} onPress={addFriendToNewChat.bind(null, friend.id, friend.firstName, friend.lastName)}>
                         <Image source={{uri: friend.avatar}} style={styles.ava}/>
-                        <Text>{friend.firstName} {friend.lastName}</Text> 
+                        <Text  style={changed.includes(friend.id) ? {color: '#fff'} : {color: '#000'}} >{friend.firstName} {friend.lastName}</Text> 
                         {
                           changed.includes(friend.id) 
                             ? <AntDesign style={styles.checkSign} name="check" size={24} color="green" /> 
@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
       width: 35,
       height: 35,
       marginRight: 20,
-      resizeMode: 'cover'
+      resizeMode: 'cover',
+      borderRadius: 17.5
     },
     checkSign: {
       position: 'absolute',

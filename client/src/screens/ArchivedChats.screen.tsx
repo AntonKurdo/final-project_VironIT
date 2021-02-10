@@ -14,8 +14,9 @@ import {useAppContext} from './../context/context';
 import httpService from '../services/http.service';
 
 const ArchivedChatsScreen = () => {
+    
     const {activeUserInfo, userArchivedChats, unarchiveChat} = useAppContext();    
-    console.log(userArchivedChats)
+   
     return (
         <View style={styles.default}>
             <View style={styles.header}>
@@ -91,7 +92,8 @@ const styles = StyleSheet.create({
     ava: {
         width: 40,
         height: 40,
-        marginRight: 15
+        marginRight: 15,
+        borderRadius: 20
     },
     chatBtn: {
         position: 'absolute',

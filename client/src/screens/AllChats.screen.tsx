@@ -23,7 +23,8 @@ const AllChatsScreen: FC = () => {
             </View>
             <ScrollView style={styles.chatsWrapper}>
                 {
-                  userPersonalChats!.map((chat: any) => {
+                  userPersonalChats?.length !== 0
+                    ? userPersonalChats!.map((chat: any) => {
                     return (
                       <View style={styles.chat} key={chat.id} >
                       <Image source={{uri: chat.avatar}} style={styles.ava}/>
@@ -45,6 +46,11 @@ const AllChatsScreen: FC = () => {
                     </View>
                     )
                   })
+                  : (
+                    <View style={styles.emptyCont}>
+                      <Text style={styles.emptyText}>No personal chats...</Text>
+                    </View>
+                  )
                 }
             </ScrollView>
             <View style={styles.header}>
@@ -56,8 +62,9 @@ const AllChatsScreen: FC = () => {
                 </TouchableOpacity>
             </View>
             <ScrollView style={styles.chatsWrapper}>
-                {
-                  userGroupChats!.map((chat: any) => {
+                { 
+                  userGroupChats?.length !== 0 
+                    ? userGroupChats!.map((chat: any) => {
                     return (
                       <View style={styles.chat} key={chat._id} >
                         <Image source={require('../../assets/group-chat-image.png')} style={styles.ava}/>
@@ -71,6 +78,11 @@ const AllChatsScreen: FC = () => {
                       </View>
                     )
                   })
+                  : (
+                    <View style={styles.emptyCont}>
+                      <Text style={styles.emptyText}>No group chats...</Text>
+                    </View>
+                  )
                 }
             </ScrollView>
             <AppModal />
@@ -112,7 +124,8 @@ const styles = StyleSheet.create({
     ava: {
       width: 40,
       height: 40,
-      marginRight: 15
+      marginRight: 15,
+      borderRadius: 20
     },
     chatBtn: {
       position: 'absolute',
@@ -125,6 +138,14 @@ const styles = StyleSheet.create({
     addGroupChatBtn: {
       position: 'absolute',
       right: 25
+    },
+    emptyCont: {
+      flex: 1,      
+      alignItems: 'center'
+    },
+    emptyText: {
+      fontSize: 17,
+      color: 'lightgray'
     }
 })
 

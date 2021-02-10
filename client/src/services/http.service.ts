@@ -231,11 +231,12 @@ class Http {
                     body: JSON.stringify({userId, newFriendId})
                 });                  
                     const json = await res.json();
-                    if(json.message === 'New friend was added...') {   
-                        Alert.alert('Attention!!!', json.message)                     
+                    if(json.status === 'ok') {                                            
                         return true;
-                    }
-                    Alert.alert('Attention!!!', json.message)
+                    } 
+                    if(json.status === 'error') {
+                        Alert.alert('Error', json.message)
+                    }                 
                     return false;                  
             }    
             return false     
@@ -257,8 +258,7 @@ class Http {
                     body: JSON.stringify({userId, friendId})
                 });                  
                     const json = await res.json();
-                    if(json.status === 'ok') {   
-                        Alert.alert('Success!', json.message)                     
+                    if(json.status === 'ok') {                                        
                         return true;
                     }                    
                     return false;                  
@@ -319,8 +319,7 @@ class Http {
                     body: JSON.stringify(comment)
                 });                  
                     const json = await res.json();
-                    if(json.message === 'Comment was added...') {    
-                        Alert.alert('Success', json.message);                                        
+                    if(json.message === 'Comment was added...') {                                                           
                         return true;
                     } 
                     Alert.alert('Error', 'Comment was not added, try again...');
@@ -347,10 +346,9 @@ class Http {
                         newAvatar
                     })
                 });                  
-                    const json = await res.json();
-                    Alert.alert('Attention', json.message)                                          
+                   return true;                                                  
             }    
-            return false     
+            return false;  
         } catch(e) {
             console.log(e);                
         }
@@ -389,11 +387,10 @@ class Http {
                 });                  
                     const json = await res.json();
                     Alert.alert('Attention', json.message);
-                    if(json.message === 'Groupchat has been created...') {
-                        Alert.alert('Attention', json.message);
+                    if(json.message === 'Groupchat has been created...') {                     
                         return true;
                     } else {
-                        Alert.alert('Error', 'Something wend wrong...');
+                        Alert.alert('Error', 'Something went wrong...');
                         return false;
                     }                                    
             }    
@@ -414,9 +411,9 @@ class Http {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(leftData)
-                });                  
-                    const json = await res.json();   
-                    return true;                                                  
+                });
+                    
+                return true;                                                  
             }    
             return false     
         } catch(e) {
