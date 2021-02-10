@@ -5,10 +5,7 @@ const config = require('config');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
 const socketStart = require('./services/socket.service');
-
-//Routers
 const authRouter = require('./routers/auth.router');
 const postRouter = require('./routers/posts.router');
 const friendsRouter = require('./routers/friends.router');
