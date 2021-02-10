@@ -9,5 +9,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "build"
-  }  
+  },
+  "exclude": [
+    "client/"
+  ]
 }
