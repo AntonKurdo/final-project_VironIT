@@ -6,8 +6,10 @@ import { THEME } from './../../theme';
 import { useAppContext } from './../context/context';
 import { Audio } from 'expo-av';
 import {io} from "socket.io-client";
+import {API_URL} from "@env";
 
-export const socket = io('http://192.168.100.2:5000', {
+
+export const socket = io(API_URL, {
   autoConnect: false
 });
 

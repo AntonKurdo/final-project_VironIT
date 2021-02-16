@@ -3,6 +3,7 @@ import {getTokenInfo, storeTokenInfo} from './asyncStorage.service';
 import * as Google from 'expo-google-app-auth';
 import {iUserData} from '../context/context';
 import { iComment } from '../components/Post.component';
+import {API_URL} from "@env";
 
 interface iData {   
     email : string,
@@ -18,7 +19,7 @@ interface iNewPost {
 }
 
 class Http {
-    private URL = 'http://192.168.100.2:5000';
+    private URL = API_URL;
 
     signUp = async(data : iData) : Promise < boolean > => {
         const res = await fetch(`${this.URL}/auth`, {
