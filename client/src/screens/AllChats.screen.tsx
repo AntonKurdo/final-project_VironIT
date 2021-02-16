@@ -1,18 +1,15 @@
 import React, {FC} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-
-import {THEME} from './../../theme';
-import { useNavigation } from '@react-navigation/native';
 import { useAppContext } from './../context/context';
 import { AppModal } from '../components/AddNewGroupChatModal';
-import httpService from '../services/http.service';
+import { UserPersonalChatsComponent } from '../components/UserPersonalChats.component';
+import { AntDesign } from '@expo/vector-icons';
+import { UserGroupChatsComponent } from '../components/UserGroupChats.component';
 
 const AllChatsScreen: FC = () => {
 
-  const navigation = useNavigation();
-  const { activeUserInfo, openModal, userGroupChats, userPersonalChats, archiveChat } = useAppContext();
+  const { openModal, userGroupChats, userPersonalChats } = useAppContext();
 
     return (
         <View style={styles.container}>
@@ -25,25 +22,8 @@ const AllChatsScreen: FC = () => {
                 {
                   userPersonalChats?.length !== 0
                     ? userPersonalChats!.map((chat: any) => {
-                    return (
-                      <View style={styles.chat} key={chat.id} >
-                      <Image source={{uri: chat.avatar}} style={styles.ava}/>
-                      <Text>{chat.firstName} {chat.lastName}</Text>
-                      <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('Current chat', {
-                        id: chat.id,
-                        avatar: chat.avatar,
-                        fullName: `${chat.firstName} ${chat.lastName}`
-                      })}>
-                          <AntDesign name="message1" size={25} color={THEME.MAIN_COLOR} />
-                      </TouchableOpacity>  
-                      <TouchableOpacity style={styles.archiveBtn} onPress={async () => {
-                        if(await httpService.archiveChat(activeUserInfo.id, chat.chat_id)) {
-                          archiveChat!(chat)
-                        }
-                      }}>
-                          <MaterialIcons name="archive" size={30} color={THEME.MAIN_COLOR} />
-                      </TouchableOpacity>                     
-                    </View>
+                    return (                      
+                      <UserPersonalChatsComponent chat={chat} key={chat.id} />                 
                     )
                   })
                   : (
@@ -66,16 +46,7 @@ const AllChatsScreen: FC = () => {
                   userGroupChats?.length !== 0 
                     ? userGroupChats!.map((chat: any) => {
                     return (
-                      <View style={styles.chat} key={chat._id} >
-                        <Image source={require('../../assets/group-chat-image.png')} style={styles.ava}/>
-                        <Text> {chat.usersLastNames.join(', ')} </Text>
-                        <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('Group chat', {
-                          id: chat._id,                          
-                          lastNames: chat.usersLastNames.join(', ')
-                        })}>
-                            <AntDesign name="message1" size={25} color={THEME.MAIN_COLOR} />
-                        </TouchableOpacity>                    
-                      </View>
+                      <UserGroupChatsComponent chat={chat} key={chat._id}/>
                     )
                   })
                   : (
@@ -108,32 +79,6 @@ const styles = StyleSheet.create({
     },
     chatsWrapper: {
       paddingVertical: 10
-    },
-    chat: {
-      alignSelf: 'center',
-      flexDirection: 'row',
-      marginVertical: 5,
-      width: '95%',
-      height: 50,
-      borderWidth: 1,
-      borderColor: THEME.MAIN_COLOR,
-      borderRadius: 10,
-      padding: 5,
-      alignItems: 'center'    
-    },
-    ava: {
-      width: 40,
-      height: 40,
-      marginRight: 15,
-      borderRadius: 20
-    },
-    chatBtn: {
-      position: 'absolute',
-      right: 15
-    },
-    archiveBtn: {
-      position: 'absolute',
-      right: 50
     },
     addGroupChatBtn: {
       position: 'absolute',

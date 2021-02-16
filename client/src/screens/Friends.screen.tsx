@@ -1,16 +1,10 @@
 import React, {FC, useState} from 'react';
-import {StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput, Image} from 'react-native';
+import {StyleSheet, View, ScrollView, Text, TouchableOpacity, TextInput} from 'react-native';
 import { EvilIcons, Entypo, AntDesign } from '@expo/vector-icons';
 import { THEME } from './../../theme';
 import { useAppContext } from '../context/context';
-import httpService from '../services/http.service';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
-import { useNavigation } from '@react-navigation/native';
+import { FriendComponent } from '../components/Friend.component';
+import { CandidateComponent } from '../components/Candidate.components';
 
 interface iCandidate {
   id: string,
@@ -19,9 +13,8 @@ interface iCandidate {
   avatar: string 
 }
 const FriendsScreen: FC = () => {
-
-  const navigation = useNavigation();
-  const {activeUserInfo, friends, allUsers, addFriend, removeFriend, setNews} = useAppContext();
+ 
+  const {friends, allUsers} = useAppContext();
   const [searchingText, setSearchingText] = useState('');
   const [candidates, setCandidates] = useState<iCandidate[]>([]);
   const [isAllCandidates, setIsAllCandidates] = useState(false); 
@@ -71,24 +64,7 @@ const FriendsScreen: FC = () => {
         {         
            candidates!.length !== 0 && candidates!.map((candidate: iCandidate) => {
               return (
-                <View style={styles.candidate} key={candidate.id} >
-                  <Image source={{uri: candidate.avatar}} style={styles.ava}/>
-                  <Text>{candidate.firstName} {candidate.lastName}</Text>
-                  <TouchableOpacity style={styles.chatBtn} onPress={async() => {
-                       const result = await httpService.addFriend(activeUserInfo.id, candidate.id);
-                       if(result) {                        
-                          addFriend!({
-                            id: candidate.id,
-                            firstName: candidate.firstName,
-                            lastName: candidate.lastName,
-                            avatar: candidate.avatar
-                          })
-                          setNews!(await httpService.getNews(activeUserInfo.id))
-                       }
-                  }}>
-                      <AntDesign name="adduser" size={25} color={THEME.MAIN_COLOR} />
-                  </TouchableOpacity>                    
-                </View>
+                <CandidateComponent candidate={candidate} key={candidate.id} />
               )
             })          
         }
@@ -99,40 +75,7 @@ const FriendsScreen: FC = () => {
         {         
             friends!.length !== 0 && friends!.map((friend: iCandidate) => {
                 return (
-                  <View style={styles.candidate} key={friend.id}>
-                    <Image source={{uri: friend.avatar}} style={styles.ava}/>
-                    <Text>{friend.firstName} {friend.lastName}</Text>                    
-                    <TouchableOpacity style={styles.chatBtn}>
-                      <Menu>
-                        <MenuTrigger>
-                          <Entypo name="dots-three-vertical" size={24} color={THEME.MAIN_COLOR} />
-                        </MenuTrigger>
-                        <MenuOptions>    
-                          <MenuOption onSelect={ async () => {
-                           if(await httpService.addNewPersonalChatToUser(activeUserInfo.id, friend.id)) {
-                            navigation.navigate('Current chat', {
-                              id: friend.id,
-                              avatar: friend.avatar,
-                              fullName: `${friend.firstName} ${friend.lastName}`
-                            })
-                           }
-                          }}>                             
-                            <Text style={{fontSize: 20}}>Send message</Text>
-                          </MenuOption>                      
-                          <MenuOption onSelect={async() => {
-                            try {
-                               await httpService.removeFriend(activeUserInfo.id, friend.id);
-                               removeFriend!(friend.id)
-                            } catch (e) {
-                              console.log(e)
-                            }                           
-                          }} >
-                            <Text style={{fontSize: 20, color: 'red'}}>Delete</Text>
-                          </MenuOption>                         
-                        </MenuOptions>
-                      </Menu>                    
-                    </TouchableOpacity>
-                  </View>
+                 <FriendComponent friend={friend} key={friend.id} />
                 )
               })          
         }
@@ -178,28 +121,7 @@ const styles = StyleSheet.create({
     width: '100%',    
     marginTop: 10,
     alignItems: 'center'    
-  },
-  candidate: {
-    flexDirection: 'row',
-    marginVertical: 5,
-    width: '90%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: THEME.MAIN_COLOR,
-    borderRadius: 10,
-    padding: 5,
-    alignItems: 'center'    
-  },
-  ava: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 15
-  },
-  chatBtn: {
-    position: 'absolute',
-    right: 15
-  },
+  }, 
   friendCont: {
     marginVertical: 10,
     alignItems: 'center'

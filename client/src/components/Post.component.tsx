@@ -6,8 +6,7 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
-    TextInput,
-    Image
+    TextInput    
 } from 'react-native';
 import {Dimensions, Alert} from 'react-native';
 import {AntDesign, MaterialCommunityIcons, FontAwesome, Entypo} from '@expo/vector-icons';
@@ -15,6 +14,7 @@ import httpService from '../services/http.service';
 import {useAppContext} from '../context/context';
 import {THEME} from './../../theme';
 import {Video} from 'expo-av';
+import { CommentComponent } from './Comment.component';
 
 export interface iPost {
     _id : string,
@@ -200,23 +200,7 @@ export const PostComponent : FC < props > = ({post}) => {
                 {isCommentsShown && comments.length !== 0
                     ? comments.map((comment : iComment) => {
                         return (
-                            <View style={styles.commentWrapper} key={comment._id}>
-                                <View style={styles.commentHeader}>
-                                    <Image
-                                        source={{
-                                        uri: comment.userAva
-                                    }}
-                                        style={styles.ava}/>
-                                    <Text style={styles.commentAuthorName}>{comment.userName}</Text>
-                                    <Text style={styles.commentDate}>{new Date(post.date).toDateString()}</Text>
-                                </View>
-                                <View style={styles.commentText}>
-                                    <Text
-                                        style={{
-                                        color: '#fff'
-                                    }}>{comment.text}</Text>
-                                </View>
-                            </View>
+                            <CommentComponent comment={comment} date={post.date} key={comment._id} />
                         )
                     })
                     : isCommentsShown && <Text
@@ -317,44 +301,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
         bottom: 7
-    },
-    commentWrapper: {
-        width: '95%',
-        alignSelf: 'center',
-        borderWidth: 1,
-        borderColor: '#fff',
-        borderRadius: 10,
-        marginBottom: 10
-    },
-    commentHeader: {
-        height: 40,
-        width: '100%',
-        marginBottom: -5,
-        flexDirection: 'row',
-        paddingHorizontal: 20,
-        alignItems: 'center',
-        borderBottomColor: '#fff',
-        borderBottomWidth: 1
-    },
-    ava: {
-        width: 25,
-        height: 25,
-        marginRight: 10,
-        borderRadius: 12.5
-    },
-    commentAuthorName: {
-        marginRight: 20,
-        fontSize: 15,
-        color: '#fff'
-    },
-    commentDate: {
-        position: 'absolute',
-        right: 10,
-        color: '#fff'
-    },
-    commentText: {
-        padding: 10
-    },
+    },    
     refreshBtn: {
         position: 'absolute',
         right: 10,
@@ -366,4 +313,4 @@ const styles = StyleSheet.create({
         left: 20,
         top: 10
     }
-})
+});

@@ -7,7 +7,7 @@ import { useAppContext } from './../context/context';
 import { Audio } from 'expo-av';
 import {io} from "socket.io-client";
 import {API_URL} from "@env";
-
+import { MessageComponent } from '../components/Message.component';
 
 export const socket = io(API_URL, {
   autoConnect: false
@@ -103,17 +103,7 @@ const CurrentChatScreen : FC = (props: any) => {
                   )   
                   : (messages.map((message: iMsg , index: number) => {
                     return  (
-                      <View 
-                        style={ 
-                          message.authorFullName === `${activeUserInfo.firstName} ${activeUserInfo.lastName}`
-                          ? {...styles.messageCont, alignSelf: 'flex-end'}
-                          : {...styles.messageCont, alignSelf: 'flex-start', backgroundColor: 'gray'}
-                        } 
-                        key={index}>
-                        <Text style={styles.messageAuthor}>{message.authorFullName}</Text>
-                        <Text style={styles.messageText}>{message.content}</Text>
-                        <Text style={styles.date}>{new Date(message.date).toLocaleString().split(' ')[4].substring(0,5)}</Text>
-                      </View>
+                      <MessageComponent message={message} key={index}/>
                     )
                   }) )                  
                 }
@@ -179,20 +169,7 @@ const styles = StyleSheet.create({
     messagesWrapper: {    
       height: Dimensions.get('screen').height - 250,      
       paddingHorizontal: 20          
-    },
-    messageCont: {      
-      backgroundColor: THEME.MAIN_COLOR,
-      marginVertical: 5,
-      padding: 7,
-      minWidth: 140,
-      minHeight: 70,
-      borderRadius: 15,
-          
-    },
-    messageText: {
-      color: '#fff',
-      fontSize: 16
-    },   
+    },      
     input: {
       alignSelf: 'center',
       color: '#000',
@@ -205,17 +182,6 @@ const styles = StyleSheet.create({
     sendMessageBtn: {
       position: 'absolute',
       right: 20
-    },
-    date: {
-      position: 'absolute',
-      right: 5, 
-      bottom: 5,
-      fontSize: 11,
-      color: 'lightgray'          
-    },
-    messageAuthor: {
-      color: 'lightgray',
-      fontSize: 12
     }
 })
 
