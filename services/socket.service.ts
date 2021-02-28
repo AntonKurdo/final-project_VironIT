@@ -3,16 +3,15 @@ const Chat = require('../models/chat.model');
 const Message = require('../models/message.model');
 const GroupChat = require('../models/groupChat.model');
 
-const socketStart = async (io: any) => {
+const socketStart = async (io: any) => {  
   try {
-    io.on("connection", (socket: any) => {      
-
-      socket.on('open chat', async (fromId: string, toId: string) => {    
-        try {
+    io.on("connection", (socket: any) => {        
+      socket.on('open chat', async (fromId: string, toId: string) => {        
+        try {          
           const chat = await Chat.findOne({$or: [{_id: `${fromId}${toId}`}, {_id: `${toId}${fromId}`}]});       
           if(chat) {      
-            socket.join(chat._id);       
-            io.emit("get message", JSON.stringify(await Message.find({chatId: chat._id})));
+            socket.join(chat._id);           
+            io.to(socket.id).emit("get message", JSON.stringify(await Message.find({chatId: chat._id})));
           } else {
             const newChat = new Chat({
               _id: `${fromId}${toId}`,
