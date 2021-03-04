@@ -16,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import {THEME} from './../../theme';
 import {useAppContext} from '../context/context';
 import { socket } from './CurrentChat.screen';
+import firebase from 'firebase';
 
 const LoginScreen : FC = () => {
 
@@ -44,7 +45,14 @@ const LoginScreen : FC = () => {
             setUserGroupChat!(await httpService.getGroupChatsById(result.id));
             setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));
             navigation.navigate('Profile');       
-            socket.connect();                 
+            socket.connect();     
+            firebase
+                .database()
+                .ref('authorizationedUsers/' + result.id  )
+                .set({
+                    email: result.email,
+                    lastVisitTime: Date.now()
+                });            
         } else {
             setIsLoadingFalse!();
         }
@@ -64,7 +72,14 @@ const LoginScreen : FC = () => {
           setUserGroupChat!(await httpService.getGroupChatsById(result.id));
           setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));
           navigation.navigate('Profile'); 
-          socket.connect();                          
+          socket.connect();  
+          firebase
+            .database()
+            .ref('authorizationedUsers/' + result.id  )
+            .set({
+                email: result.email,
+                lastVisitTime: Date.now()
+            });                          
       } else {
           setIsLoadingFalse!();
       }
