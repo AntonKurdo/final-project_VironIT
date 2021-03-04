@@ -22,6 +22,7 @@
     "chalk": "^4.1.0",
     "config": "^3.3.3",
     "express": "^4.17.1",
+    "firebase": "^8.2.9",
     "jsonwebtoken": "^8.5.1",
     "lodasync": "^1.0.7",
     "mongoose": "^5.11.13",
