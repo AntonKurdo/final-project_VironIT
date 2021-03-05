@@ -17,10 +17,6 @@ import {THEME} from './../../theme';
 import {useAppContext} from '../context/context';
 import { socket } from './CurrentChat.screen';
 import firebase from 'firebase';
-<<<<<<< HEAD
-
-=======
->>>>>>> 1e19be468e434b44b8a3f6208d17dda0acd7490e
 
 const LoginScreen : FC = () => {
 
@@ -52,19 +48,11 @@ const LoginScreen : FC = () => {
             socket.connect();     
             firebase
                 .database()
-<<<<<<< HEAD
                 .ref('authorizationedUsers/' + result.id  )
                 .set({
                     email: result.email,
                     lastVisitTime: Date.now()
-                });               
-=======
-                .ref('authentificatedUsers/' + result.id  )
-                .set({
-                    email: result.email,
-                    lastVisitTime: Date.now()
-                });            
->>>>>>> 1e19be468e434b44b8a3f6208d17dda0acd7490e
+                });           
         } else {
             setIsLoadingFalse!();
         }
