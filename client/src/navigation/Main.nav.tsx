@@ -15,6 +15,7 @@ import { useAppContext } from '../context/context';
 import { removeTokenInfo } from '../services/asyncStorage.service';
 import CurrentChatScreen, { socket } from './../screens/CurrentChat.screen';
 import CurrentGroupChatScreen from './../screens/CurrentGroupChat.screen';
+import PhoneVerificationsScreen from '../screens/PhoneVerificationScreen';
 
 const routesStyling = {
     headerStyle: {
@@ -56,10 +57,11 @@ function MainNavigator() {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator>            
                 <Stack.Screen name="Home" component={StartingScreen} options={routesStyling}/>
                 <Stack.Screen name="Sign Up" component={SignUpScreen} options={routesStyling}/>
                 <Stack.Screen name="Login" component={LoginScreen} options={routesStyling}/>       
+                <Stack.Screen name="PhoneVerification" component={PhoneVerificationsScreen} options={routesStyling}/>   
                 <Stack.Screen 
                     name="Profile" 
                     component={ProfileDrawer} 

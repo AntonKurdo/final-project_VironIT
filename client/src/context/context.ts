@@ -27,6 +27,7 @@ type iContext = {
     userGroupChats?: Array<any>
     userPersonalChats?: Array<any>
     userArchivedChats?: Array<any>
+    isVerified?: boolean,
     setActiveUserInfo?: (userData: iUserData) => void
     getUserPosts?: (posts: Array<iPost>) => void,
     clearActiveUserInfo?: () => void,
@@ -52,7 +53,8 @@ type iContext = {
     setUserArchivedChat?: (archivedChats: Array<any>) => void,
     clearUserArchivedChat?: () => void,
     archiveChat?: (chat: any) => void, 
-    unarchiveChat?: (chat: any) => void 
+    unarchiveChat?: (chat: any) => void,
+    setIsVerified?: () => void
 };
 
 export const useAppContext = () => useContext(AppContext); 

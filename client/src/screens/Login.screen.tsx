@@ -10,13 +10,14 @@ import {
     ScrollView,
     Keyboard      
 } from 'react-native';
-import {MaterialIcons} from '@expo/vector-icons';
+import {MaterialIcons, Entypo} from '@expo/vector-icons';
 import httpService from '../services/http.service';
 import {useNavigation} from '@react-navigation/native';
 import {THEME} from './../../theme';
 import {useAppContext} from '../context/context';
 import { socket } from './CurrentChat.screen';
 import firebase from 'firebase';
+
 
 const LoginScreen : FC = () => {
 
@@ -52,7 +53,7 @@ const LoginScreen : FC = () => {
                 .set({
                     email: result.email,
                     lastVisitTime: Date.now()
-                });            
+                });               
         } else {
             setIsLoadingFalse!();
         }
@@ -156,6 +157,7 @@ const LoginScreen : FC = () => {
                             source={require('../../assets/googleIcon.png')}/>
                     </View>
                 </TouchableOpacity>
+                
             </View>
         </ScrollView>
     )

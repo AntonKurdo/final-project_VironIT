@@ -2,8 +2,10 @@ import React, {FC} from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { THEME } from './../../theme';
+import { useAppContext } from '../context/context';
 
 const StartingScreen: FC = () => {
+  const {isVerified} = useAppContext();
   const navigation = useNavigation()
   return (
     <View style={styles.container}>   
@@ -16,7 +18,7 @@ const StartingScreen: FC = () => {
           <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Login')}>
             <Text style={styles.btnText}>Log In</Text>
           </TouchableOpacity> 
-          <TouchableOpacity style={{...styles.btn, marginTop: 10}} onPress={() => navigation.navigate('Sign Up')}>
+          <TouchableOpacity style={{...styles.btn, marginTop: 10}} onPress={() => isVerified ? navigation.navigate('Sign Up') : navigation.navigate('PhoneVerification')}>
             <Text style={styles.btnText}>Sign Up</Text>
           </TouchableOpacity>         
       </View>

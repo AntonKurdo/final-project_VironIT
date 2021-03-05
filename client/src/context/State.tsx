@@ -1,9 +1,8 @@
 import React, {FC,useReducer} from 'react';
 import Context, { iUserData, iUser } from './context';
 import {reducer} from './reducer';
-import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND, CLEAR_USER_PERSONAL_CHATS, SET_USER_PERSONAL_CHATS, SET_USER_ARCHIVED_CHATS, CLEAR_USER_ARCHIVED_CHATS, ARCHIVE_CHAT, UNARCHIVE_CHAT } from './types';
+import { CLEAR_ACTIVE_USER_INFO, CLEAR_USER_POSTS, GET_USER_POSTS, SET_ACTIVE_USER_INFO, LIKE_POST_BY_ID, SET_ALL_USERS, CLEAR_ALL_USERS, SET_USER_FRIENDS, ADD_FRIEND, SET_NEWS, CLEAR_NEWS, CHANGE_AVATAR, SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, OPEN_MODAL, CLOSE_MODAL, SET_USER_GROUP_CHATS, CLEAR_USER_GROUP_CHATS, LEFT_GROUP_CHAT, REMOVE_FRIEND, CLEAR_USER_PERSONAL_CHATS, SET_USER_PERSONAL_CHATS, SET_USER_ARCHIVED_CHATS, CLEAR_USER_ARCHIVED_CHATS, ARCHIVE_CHAT, UNARCHIVE_CHAT, SET_IS_VERIFIED } from './types';
 import { iPost } from './../components/Post.component';
-import { iMember } from './../components/AddNewGroupChatModal';
 
 export const AppState: FC = ({children}) => {
 
@@ -14,7 +13,8 @@ export const AppState: FC = ({children}) => {
        firstName: '',
        lastName: '',
        avatar: ''       
-     },    
+     },  
+     isVerified: false,  
      friends: [], 
      allUsers: [],
      userPosts: [],
@@ -54,6 +54,7 @@ export const AppState: FC = ({children}) => {
     const clearUserArchivedChat = () => dispatch({type: CLEAR_USER_ARCHIVED_CHATS});
     const archiveChat = (chat: any) => dispatch({type: ARCHIVE_CHAT, chat});
     const unarchiveChat = (chat: any) => dispatch({type: UNARCHIVE_CHAT, chat});
+    const setIsVerified = () => dispatch({type: SET_IS_VERIFIED});
 
     return <Context.Provider
         value={{
@@ -67,6 +68,7 @@ export const AppState: FC = ({children}) => {
           userGroupChats: state.userGroupChats,
           userPersonalChats: state.userPersonalChats,
           userArchivedChats: state.userArchivedChats,
+          isVerified: state.isVerified,
           setActiveUserInfo,
           getUserPosts,
           clearActiveUserInfo,
@@ -92,6 +94,7 @@ export const AppState: FC = ({children}) => {
           setUserArchivedChat,
           clearUserArchivedChat,
           archiveChat,
-          unarchiveChat
+          unarchiveChat,
+          setIsVerified
     }}>{children}</Context.Provider>
 };
