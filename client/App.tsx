@@ -1,5 +1,5 @@
-import React, {FC, useEffect} from 'react';
-import { LogBox, Platform } from 'react-native';
+import React, {FC, useEffect, useRef} from 'react';
+import { Alert, EmitterSubscription, LogBox, Platform } from 'react-native';
 import MainNavigator from './src/navigation/Main.nav';
 import {AppState} from './src/context/State';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -9,7 +9,7 @@ import { regusterForPushNotifications } from './src/services/getNotificationsPer
 
 Platform.OS === 'android' && LogBox.ignoreLogs(['Setting a timer']);
 
-const App: FC = () => {
+const App: FC = () => {  
 
     useEffect(() => {
         if (!firebase.apps.length) {
@@ -18,7 +18,7 @@ const App: FC = () => {
         regusterForPushNotifications();          
     }, []) 
 
-    return (
+   return (
         <AppState >
             <MenuProvider>
                 <MainNavigator/>

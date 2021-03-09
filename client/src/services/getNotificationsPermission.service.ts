@@ -16,10 +16,6 @@ export const regusterForPushNotifications  = async () => {
         shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
-      }),
-    });
-  Notifications.addNotificationResponseReceivedListener((event) => {
-      console.log('open')
-     
-  }) 
+    })
+  });
 };

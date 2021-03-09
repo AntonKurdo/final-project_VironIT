@@ -1,12 +1,31 @@
-import React, {FC} from 'react';
-import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import React, {FC, useEffect} from 'react';
+import * as Notifications from 'expo-notifications'; 
+import {StyleSheet, View, Text, Image, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { THEME } from './../../theme';
 import { useAppContext } from '../context/context';
 
 const StartingScreen: FC = () => {
   const {isVerified} = useAppContext();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+
+  useEffect(() => {  
+    Notifications.addNotificationReceivedListener((notification) => {});
+    Notifications.addNotificationResponseReceivedListener((notification) => {       
+        navigation.navigate('Notification', {
+          body: notification.notification.request.content.body
+        })
+    })   
+    return () => {
+        Notifications.removeNotificationSubscription(Notifications.addNotificationReceivedListener((notification) => {}));
+        Notifications.removeNotificationSubscription(Notifications.addNotificationResponseReceivedListener((notification) => {
+          navigation.navigate('Notification', {
+            body: notification.notification.request.content.body
+          })    
+        }));
+    }
+}, [])  
+
   return (
     <View style={styles.container}>   
       <View style={styles.titleContainer}>
