@@ -3,7 +3,7 @@ import {StyleSheet, View, Text} from 'react-native';
 import {THEME} from '../../theme';
 import { iMsg } from '../screens/CurrentChat.screen';
 import {useAppContext} from './../context/context';
-
+import moment from 'moment';
 interface MessageComponentProps {
   message: iMsg
 };
@@ -11,6 +11,7 @@ interface MessageComponentProps {
 export const MessageComponent: FC<MessageComponentProps> = ({message}) => {
 
     const {activeUserInfo} = useAppContext();
+   
     return (
         <View
             style={message.authorFullName === `${activeUserInfo.firstName} ${activeUserInfo.lastName}`
@@ -25,10 +26,7 @@ export const MessageComponent: FC<MessageComponentProps> = ({message}) => {
             }}>
             <Text style={styles.messageAuthor}>{message.authorFullName}</Text>
             <Text style={styles.messageText}>{message.content}</Text>
-            <Text style={styles.date}>{new Date(message.date)
-                    .toLocaleString()
-                    .split(' ')[4]
-                    .substring(0, 5)}</Text>
+            <Text style={styles.date}>{moment(message.date).format('HH:mm (DD:MM)')}</Text>
         </View>
     )
 };
@@ -57,4 +55,4 @@ const styles = StyleSheet.create({
         color: 'lightgray',
         fontSize: 12
     }
-})
+});
