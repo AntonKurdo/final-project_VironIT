@@ -33,6 +33,39 @@ export default function PhoneVerificationsScreen() {
   );
   const attemptInvisibleVerification = false;
 
+  const sendVerificationCode = async () => {      
+    try {
+      const phoneProvider = new firebase.auth.PhoneAuthProvider();
+      const verificationId = await phoneProvider.verifyPhoneNumber(
+        phoneNumber!,
+        recaptchaVerifier.current!
+      );
+      setVerificationId(verificationId);
+      showMessage({
+        text: 'Verification code has been sent to your phone.',
+      });
+    } catch (err) {
+      showMessage({ text: `Error: ${err.message}`});
+    }
+  };
+
+  const confirmVerificationCode = async () => {
+    try {
+      const credential = firebase.auth.PhoneAuthProvider.credential(
+        verificationId!,
+        verificationCode!
+      );
+      await firebase.auth().signInWithCredential(credential);
+      showMessage({ text: 'Phone authentication successful 👍' });
+      setPhoneNumber('');
+      setVerificationCode('');
+      setIsVerified!();
+      navigation.navigate('Sign Up')            
+    } catch (err) {
+      showMessage({ text: err.message });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <FirebaseRecaptchaVerifierModal
@@ -54,21 +87,7 @@ export default function PhoneVerificationsScreen() {
       <Button
         title="Send Verification Code"
         disabled={!phoneNumber}
-        onPress={async () => {      
-          try {
-            const phoneProvider = new firebase.auth.PhoneAuthProvider();
-            const verificationId = await phoneProvider.verifyPhoneNumber(
-              phoneNumber!,
-              recaptchaVerifier.current!
-            );
-            setVerificationId(verificationId);
-            showMessage({
-              text: 'Verification code has been sent to your phone.',
-            });
-          } catch (err) {
-            showMessage({ text: `Error: ${err.message}`});
-          }
-        }}
+        onPress={sendVerificationCode}
       />
       <Text style={{ marginTop: 20, fontSize: 20, color: THEME.MAIN_COLOR }}>Enter Verification code</Text>
       <TextInput
@@ -81,22 +100,7 @@ export default function PhoneVerificationsScreen() {
       <Button
         title="Confirm Verification Code"
         disabled={!verificationId}
-        onPress={async () => {
-          try {
-            const credential = firebase.auth.PhoneAuthProvider.credential(
-              verificationId!,
-              verificationCode!
-            );
-            await firebase.auth().signInWithCredential(credential);
-            showMessage({ text: 'Phone authentication successful 👍' });
-            setPhoneNumber('');
-            setVerificationCode('');
-            setIsVerified!();
-            navigation.navigate('Sign Up')            
-          } catch (err) {
-            showMessage({ text: err.message });
-          }
-        }}
+        onPress={confirmVerificationCode}
       />
       {message ? (
         <TouchableOpacity         
