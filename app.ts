@@ -14,6 +14,8 @@ const profileRouter = require('./routers/profile.router');
 const groupChatsRouter = require('./routers/groupChats.router');
 const personalChatsRouter = require('./routers/personalChats.router');
 const archivedChatsRouter = require('./routers/archivedChats.router');
+const {graphqlHTTP} = require('express-graphql');
+const schema = require('./graphql/schema');
 
 const PORT = process.env.PORT || config.get('port');
 
@@ -28,6 +30,10 @@ app.use('/comments', commentsRouter);
 app.use('/groupChats', groupChatsRouter);
 app.use('/personalChats', personalChatsRouter);
 app.use('/archivedChats', archivedChatsRouter);
+app.use('/graphql', graphqlHTTP({
+  schema,
+  graphiql: true  
+}));
 
 (async function startApp() {
   try {
