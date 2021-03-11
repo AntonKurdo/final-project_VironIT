@@ -1,5 +1,6 @@
 export {};
 const graphql = require('graphql');
+const { GraphQLJSON } = require('graphql-type-json');
 const {GraphQLObjectType,  GraphQLID, GraphQLString} = graphql;
 
 // TYPES 
@@ -25,6 +26,43 @@ const CommentsMutation = new GraphQLObjectType({
         try {
           const newComment = new Comment(args);      
           return await newComment.save();         
+        }
+        catch(e) {
+            console.log(e)
+        }
+      }
+    },
+    updateComment: {
+      type: GraphQLJSON,
+      args: {
+        commentId: {type: GraphQLID},
+        newText: {type: GraphQLString}
+      },
+      async resolve(parent: any, args: any) {      
+        try {
+            await Comment.updateOne({_id: args.commentId}, {text: args.newText});
+            return {
+              status: 'ok',
+              message: 'comment has been updated...'
+            } 
+        }
+        catch(e) {
+            console.log(e)
+        }
+      }
+    },
+    removeComment: {
+      type: GraphQLJSON,
+      args: {
+        commentId: {type: GraphQLID}        
+      },
+      async resolve(parent: any, args: any) {      
+        try {          
+            await Comment.deleteOne({_id: args.commentId});  
+            return {
+              status: 'ok',
+              message: 'comment has been removed...'
+            }
         }
         catch(e) {
             console.log(e)

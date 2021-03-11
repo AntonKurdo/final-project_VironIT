@@ -5,10 +5,7 @@ const {GraphQLObjectType,  GraphQLID, GraphQLString, GraphQLList} = graphql;
 
 // MODELS
 const User = require('../../models/user.model');
-const Post = require('../../models/post.model');
 const GroupChat = require('../../models/groupChat.model');
-
-
 
 const ChatsMutations = new GraphQLObjectType({
   name: 'ChatsMutations',
@@ -35,6 +32,28 @@ const ChatsMutations = new GraphQLObjectType({
               status: 'ok'        
             };
           }     
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    },
+    removePersonalChatByChatId: {
+      type: GraphQLJSON,
+      args: {
+        chatId: {type: GraphQLString},
+        userId: {type: GraphQLID},
+        secondUserId: {type: GraphQLID}
+      },
+      async resolve(parent: any, args: any) {    
+        try {
+          const firstUser = await User.findById(args.userId);
+          await User.updateOne({_id: args.userId}, {personal_chat: firstUser.personal_chat.filter((chat_id: string) => chat_id != args.chatId)});
+          const secondUser = await User.findById(args.secondUserId);
+          await User.updateOne({_id: args.secondUserId}, {personal_chat: secondUser.personal_chat.filter((chat_id: string) => chat_id != args.chatId)});
+          return {
+            status: 'ok',
+            message: 'Personal chat has been removed...'
+          }
         } catch (e) {
           console.log(e)
         }
@@ -97,7 +116,27 @@ const ChatsMutations = new GraphQLObjectType({
           await newGroupChat.save()
           await User.updateMany({_id: args.usersId}, {$push: {groupChats: args._id} })
           return {
+            status: 'ok',
             message: 'Groupchat has been created...'
+          }
+        } catch(e) {
+          console.log(e)
+        }
+      }
+    },
+    removeGroupChat: {
+      type: GraphQLJSON,
+      args: {
+        groupChatId: {type: GraphQLString}
+      },        
+      async resolve(parent: any, args: any) {  
+        try {      
+          const chat = await GroupChat.findOne({_id: args.groupChatId});
+          await User.updateMany({_id: chat.usersId}, {$pull: {groupChats: args.groupChatId}});
+          await GroupChat.deleteOne({_id: args.groupChatId});
+          return {
+            status: 'ok',
+            message: 'Groupchat has been removed...'
           }
         } catch(e) {
           console.log(e)

@@ -1,3 +1,5 @@
+import GraphQLJSON from "graphql-type-json";
+
 export {};
 const graphql = require('graphql');
 const {GraphQLObjectType,  GraphQLID, GraphQLString} = graphql;
@@ -34,6 +36,49 @@ const PostsMutation = new GraphQLObjectType({
             video
           });
           return await post.save();          
+        } catch(e) {
+          console.log(e)
+        }  
+      }
+    },
+    removePost: {
+      type: GraphQLJSON,
+      args: {
+        postId: {type: GraphQLID}
+      },
+      async resolve(parent: any, args: any) {
+        try {
+          await Post.deleteOne({_id: args.postId});  
+          return {
+            status: 'ok',
+            message: 'post has been removed...'
+          }  
+        } catch(e) {
+          console.log(e)
+        }  
+      }
+    },
+    updatePost: {
+      type: GraphQLJSON,
+      args: {
+        postId: {type: GraphQLID},
+        title: {type: GraphQLString},
+        text: {type: GraphQLString},
+        picture: {type: GraphQLString},
+        video: {type: GraphQLString},
+      },
+      async resolve(parent: any, args: any) {
+        try {
+          await Post.updateOne({_id: args.postId}, {
+            title: args.title,
+            text: args.text,
+            picture: args.picture,
+            video: args.video
+          });  
+          return {
+            status: 'ok',
+            message: 'post has been update...'
+          }  
         } catch(e) {
           console.log(e)
         }  
