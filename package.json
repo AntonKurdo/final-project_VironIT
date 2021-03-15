@@ -5,7 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "start": "node build/app",
-    "start:dev": "nodemon app"
+    "start:dev": "nodemon app",
+    "test": "jest"
   },
   "keywords": [
     "NodeJS",
@@ -23,6 +24,7 @@
     "config": "^3.3.3",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
+    "express-winston": "^4.1.0",
     "firebase": "^8.2.9",
     "graphql": "^15.5.0",
     "graphql-date": "^1.0.3",
@@ -31,12 +33,15 @@
     "lodasync": "^1.0.7",
     "mongoose": "^5.11.13",
     "socket.io": "^3.1.0",
+    "winston": "^3.3.3",
     "yup": "^0.32.8"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",
+    "@types/jest": "^26.0.20",
     "@types/node": "^14.14.22",
     "@types/passport": "^1.0.5",
+    "jest": "^26.6.3",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"

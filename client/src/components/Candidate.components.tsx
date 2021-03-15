@@ -1,10 +1,10 @@
 import { AntDesign } from '@expo/vector-icons';
 import React, { FC } from 'react';
-import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Image, Text, TouchableOpacity, Alert} from 'react-native';
 import { THEME } from '../../theme';
-import httpService from '../services/http.service';
 import { useAppContext } from './../context/context';
-
+import { useMutation } from '@apollo/client';
+import {ADD_FRIEND_MUTATION} from '../appollo/mutations/addFriend'
 interface CandidateComponentProps {
   candidate: {
     id: string,
@@ -15,7 +15,9 @@ interface CandidateComponentProps {
 };
 
 export const CandidateComponent: FC<CandidateComponentProps> = ({candidate}) => {
-    const {activeUserInfo, addFriend, setNews} = useAppContext();
+    const {activeUserInfo, addFriend } = useAppContext();
+    const [addFriendGQL, {}] = useMutation(ADD_FRIEND_MUTATION);
+  
     return (
         <View style={styles.candidate} key={candidate.id}>
             <Image
@@ -26,12 +28,18 @@ export const CandidateComponent: FC<CandidateComponentProps> = ({candidate}) => 
             <Text>{candidate.firstName} {candidate.lastName}</Text>
             <TouchableOpacity
                 style={styles.chatBtn}
-                onPress={async() => {
-                const result = await httpService.addFriend(activeUserInfo.id, candidate.id);
-                if (result) {
-                    addFriend !({id: candidate.id, firstName: candidate.firstName, lastName: candidate.lastName, avatar: candidate.avatar})
-                    setNews!(await httpService.getNews(activeUserInfo.id))
-                }
+                onPress={async() => {             
+                  const res = await addFriendGQL({
+                    variables: {
+                      userId: activeUserInfo.id,
+                      newFriendId: candidate.id
+                    }
+                  })
+                  if(res.data.friends.addFriend.status === 'ok') {
+                    addFriend !({id: candidate.id, firstName: candidate.firstName, lastName: candidate.lastName, avatar: candidate.avatar});                    
+                  } else {
+                    Alert.alert("Error...", res.data.friends.addFriend.message)
+                  }               
             }}>
                 <AntDesign name="adduser" size={25} color={THEME.MAIN_COLOR}/>
             </TouchableOpacity>
@@ -62,3 +70,4 @@ const styles = StyleSheet.create({
     right: 15
   }
 });
+

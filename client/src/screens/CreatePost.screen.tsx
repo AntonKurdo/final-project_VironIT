@@ -18,12 +18,17 @@ import {PhotoPicker} from './../components/PhotoPicker.component';
 import {VideoPicker} from './../components/VideoPicker.component';
 import {ImageFromGalleryPicker} from '../components/ImageFromGalleryPicker.component';
 import {useAppContext} from '../context/context';
+import {useMutation} from '@apollo/client';
+
+import { ADD_NEW_POST_MUTATION } from '../appollo/mutations/addNewPost';
 
 const CreatePostScreen : FC = () => {
 
     const navigation = useNavigation();
 
-    const {activeUserInfo, getUserPosts} = useAppContext();
+    const {activeUserInfo} = useAppContext();
+
+    const [addNewPostGQL, {}] = useMutation(ADD_NEW_POST_MUTATION);
 
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
@@ -45,9 +50,16 @@ const CreatePostScreen : FC = () => {
     const addNewPostHandler = async() => {
         if (text && title && (picture || video)) {
             setIsBtnDisabled(true);
-            const isPosted = await httpService.addNewPost({title, text, picture, video, owner: activeUserInfo.id});
-            if (isPosted) {
-                getUserPosts && getUserPosts(await httpService.getAllUserPostsById(activeUserInfo.id))
+            const isPosted = await addNewPostGQL({
+                variables: {
+                    title, 
+                    text, 
+                    picture, 
+                    video, 
+                    owner: activeUserInfo.id
+                }
+            });
+            if (isPosted.data.status === 'ok') {            
                 Alert.alert('Success', 'Your note has been posted...');
                 setTitle('');
                 setText('');

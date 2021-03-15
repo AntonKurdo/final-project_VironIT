@@ -17,8 +17,24 @@ const archivedChatsRouter = require('./routers/archivedChats.router');
 const {graphqlHTTP} = require('express-graphql');
 const schema = require('./graphql/schema');
 
-const PORT = process.env.PORT || config.get('port');
+const winston = require('winston');
+const expressWinston = require('express-winston');
 
+const PORT = process.env.PORT || config.get('port');
+app.use(expressWinston.logger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.json()
+  ),
+  meta: false,
+  msg: "HTTP  ",
+  expressFormat: true,
+  colorize: false,
+  ignoreRoute: function (req: any, res: any) { return false; }
+}));
 app.use(bodyParser.json());
 
 //ROUTERS 

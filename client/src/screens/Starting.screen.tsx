@@ -5,9 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { THEME } from './../../theme';
 import { useAppContext } from '../context/context';
 
+
 const StartingScreen: FC = () => {
   const {isVerified} = useAppContext();
-  const navigation = useNavigation();
+  const navigation = useNavigation(); 
 
   useEffect(() => {  
     Notifications.addNotificationReceivedListener((notification) => {});

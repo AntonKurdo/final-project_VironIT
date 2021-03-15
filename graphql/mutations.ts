@@ -1,6 +1,9 @@
 export{}
 const graphql = require('graphql');
-const {GraphQLObjectType} = graphql;
+const {GraphQLObjectType, GraphQLID, GraphQLString} = graphql;
+const { GraphQLJSON } = require('graphql-type-json');
+const User = require('../models/user.model')
+
 
 // MUTATIONS
 const PostMutation = require('./mutations/posts.mutation');
@@ -33,6 +36,21 @@ const RootMutation = new GraphQLObjectType({
       type: ChatsMutations,
       resolve() {
         return 'ok'
+      }
+    },
+    changeAvatar: {
+      type: GraphQLJSON,
+      args: {userId: {type: GraphQLID}, newAva: {type: GraphQLString}},
+      async resolve(parents: any, args: any) {
+        try {
+          await User.updateOne({_id: args.userId},  {avatar: args.newAva});
+          return {
+            status: 'ok',
+            message: 'Avatar has been updated...'
+          }
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
   }

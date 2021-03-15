@@ -17,7 +17,7 @@ const PostsMutation = new GraphQLObjectType({
   name: 'PostsMutation',
   fields: () => ({
     addNewPost: {
-      type: PostType,
+      type: GraphQLJSON,
       args: {
         title: {type: GraphQLString},
         text: {type: GraphQLString},
@@ -35,7 +35,11 @@ const PostsMutation = new GraphQLObjectType({
             owner,
             video
           });
-          return await post.save();          
+          await post.save();        
+          return  {
+            status: 'ok',
+            message: 'new post has been created...'
+          }  
         } catch(e) {
           console.log(e)
         }  
@@ -85,7 +89,7 @@ const PostsMutation = new GraphQLObjectType({
       }
     },
     likePostById: {
-      type: PostType,
+      type: GraphQLJSON,
       args: {
         postId: {type: GraphQLID},
         userId: {type: GraphQLID}
@@ -96,10 +100,17 @@ const PostsMutation = new GraphQLObjectType({
           const isAlreadyLiked = post.likes.indexOf(args.userId);
           if(isAlreadyLiked === -1) {
             await Post.updateOne({_id: args.postId}, {likes: [...post.likes, args.userId]}, {new: true})
+            return {
+              status: 'ok',
+              message: "liked"
+            }
           } else {
             await Post.updateOne({_id: args.postId}, {likes: post.likes.filter((item: any) => item != args.userId)})
-          }   
-          return await Post.findOne({_id: args.postId});         
+            return {
+              status: 'ok',
+              message: "disliked"
+            }
+          }                
         } catch(e) {
           console.log(e)
         }

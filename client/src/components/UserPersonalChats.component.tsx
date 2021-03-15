@@ -3,9 +3,9 @@ import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import {StyleSheet, View, Image, TouchableOpacity, Text} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { THEME } from '../../theme';
-import httpService from '../services/http.service';
 import { useAppContext } from './../context/context';
-
+import { useMutation } from '@apollo/client';
+import { ARCHIVE_CHAT_MUTATION } from '../appollo/mutations/archiveChat';
 interface UserPersonalChatsComponentProps {
   chat: {
     id: string,
@@ -19,7 +19,8 @@ interface UserPersonalChatsComponentProps {
 export const UserPersonalChatsComponent: FC<UserPersonalChatsComponentProps> = ({chat}) => {
   
     const navigation = useNavigation();
-    const {activeUserInfo, archiveChat} = useAppContext()
+    const {activeUserInfo, archiveChat} = useAppContext();
+    const [archiveChatGQL, {data}] = useMutation(ARCHIVE_CHAT_MUTATION);
     return (
         <View style={styles.chat}>
             <Image
@@ -40,9 +41,14 @@ export const UserPersonalChatsComponent: FC<UserPersonalChatsComponentProps> = (
             <TouchableOpacity
                 style={styles.archiveBtn}
                 onPress={async() => {
-                if (await httpService.archiveChat(activeUserInfo.id, chat.chat_id)) {
-                    archiveChat!(chat)
-                }
+                  archiveChatGQL({                  
+                    variables: {
+                      userId: activeUserInfo.id,
+                      chatId: chat.chat_id
+                  }
+                  })              
+                  archiveChat!(chat);
+                
             }}>
                 <MaterialIcons name="archive" size={30} color={THEME.MAIN_COLOR}/>
             </TouchableOpacity>

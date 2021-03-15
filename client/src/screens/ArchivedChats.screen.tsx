@@ -1,11 +1,12 @@
 import React from 'react';
 import {StyleSheet, View, Text, ScrollView, Dimensions} from 'react-native';
+
 import {useAppContext} from './../context/context';
 import {UserArchivedChatsComponent} from '../components/UserArchivedChats.component';
 
 const ArchivedChatsScreen = () => {
 
-    const {userArchivedChats} = useAppContext();
+    const {userArchivedChats} = useAppContext();   
 
     return (
         <View style={styles.default}>

@@ -9,7 +9,7 @@ import {io} from "socket.io-client";
 import {API_URL} from "@env";
 import { MessageComponent } from '../components/Message.component';
 
-export const socket = io(API_URL, {
+export const socket = io("http://192.168.100.6:5000", {
   autoConnect: false
 });
 

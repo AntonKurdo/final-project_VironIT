@@ -7,11 +7,12 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import httpService from '../services/http.service';
 import { useNavigation } from '@react-navigation/native';
 import { useAppContext } from './../context/context';
 import { THEME } from '../../theme';
-
+import {useMutation} from '@apollo/client'
+import { REMOVE_FRIEND_MUTATION } from '../appollo/mutations/removeFriend';
+import { ADD_PERSONAL_CHAT_MUTATION } from '../appollo/mutations/addNewPersonalChatToUser';
 interface FriendComponentProps {
   friend: {
     id: string,
@@ -22,9 +23,13 @@ interface FriendComponentProps {
 }
 
 export const FriendComponent: FC<FriendComponentProps> = ({friend}) => {
-
+    
     const navigation = useNavigation();
     const {activeUserInfo, removeFriend} = useAppContext();
+
+    const [removeFriendGQL, {data}] = useMutation(REMOVE_FRIEND_MUTATION);
+    const [addNewPersonalChatToUserGQL ] = useMutation(ADD_PERSONAL_CHAT_MUTATION);
+
     return (
         <View style={styles.candidate} key={friend.id}>
             <Image
@@ -41,13 +46,17 @@ export const FriendComponent: FC<FriendComponentProps> = ({friend}) => {
                     <MenuOptions>
                         <MenuOption
                             onSelect={async() => {
-                            if (await httpService.addNewPersonalChatToUser(activeUserInfo.id, friend.id)) {
+                                addNewPersonalChatToUserGQL({
+                                    variables: {
+                                        userId: activeUserInfo.id,
+                                        secondUserId: friend.id
+                                    }
+                                })                          
                                 navigation.navigate('Current chat', {
                                     id: friend.id,
                                     avatar: friend.avatar,
                                     fullName: `${friend.firstName} ${friend.lastName}`
-                                })
-                            }
+                                })                            
                         }}>
                             <Text
                                 style={{
@@ -56,9 +65,14 @@ export const FriendComponent: FC<FriendComponentProps> = ({friend}) => {
                         </MenuOption>
                         <MenuOption
                             onSelect={async() => {
-                            try {
-                                await httpService.removeFriend(activeUserInfo.id, friend.id);
-                                removeFriend !(friend.id)
+                            try {                                                   
+                                removeFriendGQL({
+                                    variables: {
+                                        userId: activeUserInfo.id,
+                                        friendId: friend.id
+                                    }
+                                });                               
+                                removeFriend!(friend.id)
                             } catch (e) {
                                 console.log(e)
                             }

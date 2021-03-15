@@ -14,7 +14,7 @@ const CommentsMutation = new GraphQLObjectType({
   name: 'CommentsMutation',
   fields: () => ({
     addNewComment: {
-      type: CommentType,
+      type: GraphQLJSON,
       args: {
         postId: {type: GraphQLID},
         userId: {type: GraphQLID},
@@ -25,7 +25,11 @@ const CommentsMutation = new GraphQLObjectType({
       async resolve(parent: any, args: any) {      
         try {
           const newComment = new Comment(args);      
-          return await newComment.save();         
+          await newComment.save();    
+          return {
+            status: 'ok', 
+            message: 'new comment has been saved...'
+          }     
         }
         catch(e) {
             console.log(e)

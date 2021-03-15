@@ -17,18 +17,21 @@ import {THEME} from './../../theme';
 import {useAppContext} from '../context/context';
 import { socket } from './CurrentChat.screen';
 import firebase from 'firebase';
+import {useLazyQuery} from '@apollo/client';
+import { GET_ALL_USERS_QUERY } from '../appollo/queries/getAllUsers';
 
 const LoginScreen : FC = () => {
 
     const [secure, setSecure] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-   
-
+       
     const navigation = useNavigation();
     const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends, setNews, isLoading, setIsLoadingTrue, setIsLoadingFalse, setUserGroupChat, setUserPersonalChat, setUserArchivedChat} = useAppContext();
 
-    const login = async () => {
+    const [getAllUsersGQL, {data: allUsersData}] = useLazyQuery(GET_ALL_USERS_QUERY);
+
+    const login = async () => {        
         Keyboard.dismiss();
         setIsLoadingTrue!();
         const result = await httpService.logIn({email, password});
@@ -36,11 +39,13 @@ const LoginScreen : FC = () => {
         setPassword('');
         if (typeof result !== 'boolean' && setActiveUserInfo) {
             await setActiveUserInfo(result);
-            const posts = await httpService.getAllUserPostsById(result.id);
-            getUserPosts && getUserPosts(posts);
-            setAllUsers!(await httpService.getAllUsers());                       
+            // const posts = await httpService.getAllUserPostsById(result.id);
+            // getUserPosts && getUserPosts(posts);
+            await getAllUsersGQL();
+            console.log(allUsersData);
+            // setAllUsers!(allUsersData);                       
             setUserFriends!(await httpService.getAllFriendsById(result.id)); 
-            setNews!(await httpService.getNews(result.id)); 
+            // setNews!(await httpService.getNews(result.id)); 
             setUserPersonalChat!(await httpService.getAllChatsById(result.id));
             setUserGroupChat!(await httpService.getGroupChatsById(result.id));
             setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));

@@ -6,16 +6,19 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
-    TextInput    
+    TextInput,    
+    ActivityIndicator
 } from 'react-native';
 import {Dimensions, Alert} from 'react-native';
 import {AntDesign, MaterialCommunityIcons, FontAwesome, Entypo} from '@expo/vector-icons';
-import httpService from '../services/http.service';
 import {useAppContext} from '../context/context';
 import {THEME} from './../../theme';
 import {Video} from 'expo-av';
 import { CommentComponent } from './Comment.component';
-
+import  {All_COMMENTS_BY_POST_ID_QUERY} from '../appollo/queries/query';
+import {useMutation, useLazyQuery} from '@apollo/client';
+import { LIKE_POST_MUTATION } from '../appollo/mutations/likePost';
+import { ADD_NEW_COMMENT_MUTATION } from '../appollo/mutations/addNewComment';
 export interface iPost {
     _id : string,
     date : Date,
@@ -25,7 +28,7 @@ export interface iPost {
     picture : string,
     video: string,
     owner : string
-}
+};
 
 export interface iComment {
     _id?: string,
@@ -35,27 +38,42 @@ export interface iComment {
     userAva : string,
     date?: Date,
     text : string
-}
+};
 
 interface props {
-    post : iPost
-}
+    post : iPost, 
+    refetch: () => {}
+};
 
-export const PostComponent : FC < props > = ({post}) => {
+export const PostComponent : FC < props > = ({post, refetch}) => {
+
+    const [getAllComments, {data, loading }] = useLazyQuery(All_COMMENTS_BY_POST_ID_QUERY, {
+        variables: {
+            postId: post._id
+        }      
+    });
+
+    const [likePostByIdGQL, {}] = useMutation(LIKE_POST_MUTATION);
+    const [ addNewCommentGQL, {} ] = useMutation(ADD_NEW_COMMENT_MUTATION);
 
     const {activeUserInfo, likePostById} = useAppContext();
     const [isBtnDisabled, setIsBtnDisabled] = useState(false);
-    const [isFavorite, setIsFavourite] = useState(post.likes.includes(activeUserInfo.id));
-    const [comments, setComments] = useState([]);
+    const [isFavorite, setIsFavourite] = useState(post.likes.includes(activeUserInfo.id));  
     const [isCommentsShown, setIsCommentsShown] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [isMuted, setIsMuted] = useState(true);
 
     const likeHandler = async(postId : string) => {
         setIsBtnDisabled(true);
-        const res = await httpService.likePostById(postId, activeUserInfo.id);
+        const res = await likePostByIdGQL({
+            variables: {
+                postId,
+                userId: activeUserInfo.id
+            }
+        });
         if (res) {
-            likePostById !(postId);
+            likePostById!(postId);
+            refetch()
             setIsBtnDisabled(false);
             if (isFavorite) {
                 setIsFavourite(false)
@@ -73,25 +91,31 @@ export const PostComponent : FC < props > = ({post}) => {
                 userName: `${activeUserInfo.firstName} ${activeUserInfo.lastName}`,
                 userAva: activeUserInfo.avatar,
                 text: commentText
-            }
-            await httpService.addNewComment(newComment);
-            setComments(await httpService.getCommentsByPostId(postId))
+            }            
+            addNewCommentGQL({
+                variables: {...newComment}
+            })
+            getAllComments();
             setCommentText('');
         } else {
-            Alert.alert('Error', 'Comment should not be empty!!!')
+            Alert.alert('Error', 'Comment should not be empty!!!');
         }
 
     };
 
     const openComments = async(postId : string) => {
-        if (comments.length == 0) {
-            setComments(await httpService.getCommentsByPostId(postId))
+        if (!data) {         
+            getAllComments({variables: {
+                postId
+            }});            
         }
         setIsCommentsShown(!isCommentsShown)
     };
 
     const refreshComments = async(postId : string) => {
-        setComments(await httpService.getCommentsByPostId(postId))
+        getAllComments({variables: {
+            postId
+        }});
     }
 
     return (
@@ -197,17 +221,20 @@ export const PostComponent : FC < props > = ({post}) => {
                     </TouchableOpacity>
                 </View>
 
-                {isCommentsShown && comments.length !== 0
-                    ? comments.map((comment : iComment) => {
-                        return (
-                            <CommentComponent comment={comment} date={post.date} key={comment._id} />
-                        )
-                    })
-                    : isCommentsShown && <Text
-                        style={{
-                        color: '#fff',
-                        marginLeft: 20
-                    }}>There is no comments yet. You can add first!!!</Text>
+                {loading 
+                    ? <ActivityIndicator size='large' color='white' />
+                    : isCommentsShown && data && data.comments && data.comments.getCommentsByPostId.length !== 0
+                        ? data.comments.getCommentsByPostId.map((comment : iComment) => {
+                            return (
+                                <CommentComponent comment={comment} date={post.date} key={comment._id} />
+                            )
+                        })
+                        : isCommentsShown && <Text
+                            style={{
+                            color: '#fff',
+                            marginLeft: 20
+                        }}>There is no comments yet. You can add first!!!</Text> 
+
 }
                 <View>
                     <TextInput

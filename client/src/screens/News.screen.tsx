@@ -1,25 +1,49 @@
 import React, {FC, useState, useEffect} from 'react';
-import {StyleSheet, View, ScrollView, Image, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Image, Text, ActivityIndicator} from 'react-native';
 import { PostComponent } from '../components/Post.component';
 import { useAppContext } from '../context/context';
 import { THEME } from './../../theme';
+import {useQuery} from '@apollo/client';
+import { GET_NEWS_QUERY } from '../appollo/queries/getNews';
+import { useNavigation } from '@react-navigation/core';
 
 const NewsScreen: FC = () => {
 
-  const {news, friends} = useAppContext();
-  const [newsLocal, setNewsLocal] = useState(news);
-  useEffect(() => {
-    const newArr =  news!.map((item: any) => {
-      const fr = friends!.find((friend: any) => friend.id === item.owner);
-      return {
-        ...item, 
-        avatar: fr?.avatar,
-        firstName: fr?.firstName,
-        lastName: fr?.lastName
-      }
-    })
-    setNewsLocal(newArr)
-  }, [news])
+  const {friends, activeUserInfo} = useAppContext();
+  const navigation = useNavigation();
+  const {data, loading, refetch} = useQuery(GET_NEWS_QUERY, {
+    variables: {
+      userId: activeUserInfo.id
+    }
+  })
+  const [newsLocal, setNewsLocal] = useState<any[]>([]); 
+  navigation.addListener('focus', () => {
+   refetch()
+  });
+
+  
+  useEffect(() => {    
+    if(data && data.posts.getNews) {
+      const newArr =  data.posts.getNews.map((item: any) => {
+        const fr = friends!.find((friend: any) => friend.id === item.owner);
+        return {
+          ...item, 
+          avatar: fr?.avatar,
+          firstName: fr?.firstName,
+          lastName: fr?.lastName
+        }
+      })
+      setNewsLocal(newArr)
+    }
+  }, [data])
+
+  if (loading) {
+    return (       
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={THEME.MAIN_COLOR}/>
+        </View>   
+    )
+};
   return (
     <ScrollView style={styles.container}>    
         {
@@ -32,8 +56,7 @@ const NewsScreen: FC = () => {
                      <Text style={styles.postDate}>{new Date(post.date).toDateString()}</Text> 
                   </View>
                  <PostComponent post={post} />
-              </View>
-             
+              </View>             
             )
           })
         }
@@ -79,7 +102,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     color: 'gray'
-  }
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+},
 })
 
 export default NewsScreen;

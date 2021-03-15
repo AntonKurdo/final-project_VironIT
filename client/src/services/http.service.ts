@@ -6,6 +6,8 @@ import { iComment } from '../components/Post.component';
 import {API_URL} from "@env";
 
 interface iData {   
+    firstName?: string,
+    lastName?: string,
     email : string,
     password : string
 };
@@ -19,7 +21,7 @@ interface iNewPost {
 }
 
 class Http {
-    private URL = API_URL;
+    private URL = 'http://192.168.100.6:5000';
 
     signUp = async(data : iData) : Promise < boolean > => {
         const res = await fetch(`${this.URL}/auth`, {

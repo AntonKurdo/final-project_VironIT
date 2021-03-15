@@ -6,9 +6,10 @@ import { THEME } from './../../theme';
 import { useAppContext } from './../context/context';
 import { Audio } from 'expo-av';
 import { iMsg, socket } from './CurrentChat.screen';
-import httpService from '../services/http.service';
 import { useNavigation } from '@react-navigation/native';
 import { MessageComponent } from '../components/Message.component';
+import {useMutation} from '@apollo/client';
+import { LEAVE_GROUP_CHAT_MUTATION } from '../appollo/mutations/leaveGroupChat';
 
 const CurrentGroupChatScreen: FC = (props: any) => {
 
@@ -17,6 +18,7 @@ const CurrentGroupChatScreen: FC = (props: any) => {
   const [messages, setMessages] = useState<Array<iMsg>>([]);
   const [msgText, setMsgText] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+  const [leaveGroupChatGQL, {}] = useMutation(LEAVE_GROUP_CHAT_MUTATION);
 
   useEffect(() => {
     socket.emit('open groupchat', props.route.params.id); 
@@ -87,11 +89,13 @@ const CurrentGroupChatScreen: FC = (props: any) => {
             date: new Date(Date.now()),
             type: 'exit'
           }
-          await httpService.leftChat({
-            chatId: props.route.params.id,
-            userId: activeUserInfo.id,
-            userLastName: activeUserInfo.lastName
-          })
+          leaveGroupChatGQL({
+            variables: {
+              chatId: props.route.params.id,
+              userId: activeUserInfo.id,
+              userLastName: activeUserInfo.lastName
+            }
+          })          
           socket.emit('groupchat message', leftMessage, activeUserInfo.id, props.route.params.id);  
           leftChat!(props.route.params.id);
           navigation.goBack();

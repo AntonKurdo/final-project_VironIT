@@ -2,9 +2,9 @@ import {MaterialIcons} from '@expo/vector-icons';
 import React, {FC} from 'react';
 import {StyleSheet, View, TouchableOpacity, Image, Text} from 'react-native';
 import {THEME} from '../../theme';
-import httpService from '../services/http.service';
 import {useAppContext} from './../context/context';
-
+import { useMutation } from '@apollo/client';
+import { UNARCHIVE_CHAT_MUTATION } from '../appollo/mutations/unarchiveChat';
 interface UserArchivedChatsComponentProps {
     chat : {
         id: string,
@@ -17,6 +17,7 @@ interface UserArchivedChatsComponentProps {
 
 export const UserArchivedChatsComponent : FC < UserArchivedChatsComponentProps > = ({chat}) => {
     const {activeUserInfo, unarchiveChat} = useAppContext();
+    const [unarchiveChatGQL, {data}] = useMutation(UNARCHIVE_CHAT_MUTATION);
     return (
         <View style={styles.chat}>
             <Image
@@ -28,9 +29,13 @@ export const UserArchivedChatsComponent : FC < UserArchivedChatsComponentProps >
             <TouchableOpacity
                 style={styles.chatBtn}
                 onPress={async() => {
-                if (await httpService.unarchiveChat(activeUserInfo.id, chat.chat_id)) {
-                    unarchiveChat !(chat);
-                }
+                    unarchiveChatGQL({
+                        variables: {
+                            userId: activeUserInfo.id,
+                            chatId: chat.chat_id
+                        }
+                    })               
+                    unarchiveChat !(chat);                
             }}>
                 <MaterialIcons name="unarchive" size={30} color={THEME.MAIN_COLOR}/>
             </TouchableOpacity>

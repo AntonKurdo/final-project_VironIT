@@ -3,23 +3,31 @@ import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 import {THEME} from './../../theme';
 import {iUser, useAppContext} from '../context/context';
 import {takeNewAvatar} from './../services/takeNewAvatar.service';
-import httpService from '../services/http.service';
 import {Ionicons, MaterialIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
-import { ScrollView } from 'react-native-gesture-handler';
+import {useMutation} from '@apollo/client';
+import { CHANGE_AVATAR_MUTATION } from '../appollo/mutations/changeAva';
 
 const ProfileScreen : FC = () => {
     const {activeUserInfo, friends, changeAvatar, setIsLoadingFalse} = useAppContext();
     const navigation = useNavigation();
+
     useEffect(() => {
         setTimeout(setIsLoadingFalse, 200)
-    }, [])
+    }, []);
 
-    const changeAvatarHendler = async() => {
+    const [changeAvaGQL, {}] = useMutation(CHANGE_AVATAR_MUTATION);
+    
+    const changeAvatarHandler = async() => {
         const newAva = await takeNewAvatar();
         if (newAva) {
-            httpService.changeAvatar(activeUserInfo.id, newAva)
-            changeAvatar !(newAva)
+            changeAvaGQL({
+                variables: {
+                    userId: activeUserInfo.id,
+                    newAva
+                }
+            });
+            changeAvatar!(newAva);
         }
     }
 
@@ -47,7 +55,7 @@ const ProfileScreen : FC = () => {
                     </Text>
                 </View>
                 <View style={styles.optionsBody}>
-                    <TouchableOpacity style={styles.btnCont} onPress={changeAvatarHendler}>
+                    <TouchableOpacity style={styles.btnCont} onPress={changeAvatarHandler}>
                         <Ionicons name="person-circle" size={35} color='#fff'/>
                     </TouchableOpacity>
                     <TouchableOpacity
