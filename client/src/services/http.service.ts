@@ -21,7 +21,7 @@ interface iNewPost {
 }
 
 class Http {
-    private URL = 'http://192.168.100.6:5000';
+    private URL = 'http://192.168.100.2:5000';
 
     signUp = async(data : iData) : Promise < boolean > => {
         const res = await fetch(`${this.URL}/auth`, {

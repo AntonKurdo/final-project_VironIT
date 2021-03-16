@@ -1,17 +1,22 @@
 import React, {FC} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import { useAppContext } from './../context/context';
 import { AppModal } from '../components/AddNewGroupChatModal';
 import { UserPersonalChatsComponent } from '../components/UserPersonalChats.component';
 import { AntDesign } from '@expo/vector-icons';
 import { UserGroupChatsComponent } from '../components/UserGroupChats.component';
+interface props {
+  personalChatsGQL: any,
+  groupChatsGQL: any,
+  refetchPersonalChats: () => void,
+  refetchArchivedChats: () => void
+}
 
-const AllChatsScreen: FC = () => {
+const AllChatsScreen: FC<props> = ({personalChatsGQL, groupChatsGQL, refetchPersonalChats, refetchArchivedChats}) => {
 
-  const { openModal, userGroupChats, userPersonalChats } = useAppContext();
-
-    return (
+  const { openModal} = useAppContext();
+  return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>
@@ -19,18 +24,19 @@ const AllChatsScreen: FC = () => {
                 </Text>
             </View>
             <ScrollView style={styles.chatsWrapper}>
-                {
-                  userPersonalChats?.length !== 0
-                    ? userPersonalChats!.map((chat: any) => {
-                    return (                      
-                      <UserPersonalChatsComponent chat={chat} key={chat.id} />                 
-                    )
-                  })
-                  : (
-                    <View style={styles.emptyCont}>
-                      <Text style={styles.emptyText}>No personal chats...</Text>
-                    </View>
-                  )
+                { personalChatsGQL
+                    && personalChatsGQL.chats
+                    && personalChatsGQL.chats.getAllPersonalChatsByUserId.length !== 0
+                      ? personalChatsGQL.chats.getAllPersonalChatsByUserId.map((chat: any) => {
+                      return (                      
+                        <UserPersonalChatsComponent chat={chat} key={chat._id} refetchPersonalChats={refetchPersonalChats} refetchArchivedChats={refetchArchivedChats} />                 
+                      )
+                    })
+                      : (
+                        <View style={styles.emptyCont}>
+                          <Text style={styles.emptyText}>No personal chats...</Text>
+                        </View>
+                      )
                 }
             </ScrollView>
             <View style={styles.header}>
@@ -43,8 +49,10 @@ const AllChatsScreen: FC = () => {
             </View>
             <ScrollView style={styles.chatsWrapper}>
                 { 
-                  userGroupChats?.length !== 0 
-                    ? userGroupChats!.map((chat: any) => {
+                groupChatsGQL
+                  && groupChatsGQL.chats
+                  && groupChatsGQL.chats.getGroupChatsById.length !== 0 
+                    ? groupChatsGQL.chats.getGroupChatsById.map((chat: any) => {
                     return (
                       <UserGroupChatsComponent chat={chat} key={chat._id}/>
                     )
@@ -58,7 +66,7 @@ const AllChatsScreen: FC = () => {
             </ScrollView>
             <AppModal />
         </View>
-    )
+  )
 };
 
 const styles = StyleSheet.create({
@@ -91,6 +99,11 @@ const styles = StyleSheet.create({
     emptyText: {
       fontSize: 17,
       color: 'lightgray'
+    },
+    indicatorStyles: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center'
     }
 })
 

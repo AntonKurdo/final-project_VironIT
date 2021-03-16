@@ -7,36 +7,37 @@ import { useMutation } from '@apollo/client';
 import {ADD_FRIEND_MUTATION} from '../appollo/mutations/addFriend'
 interface CandidateComponentProps {
   candidate: {
-    id: string,
+    _id: string,
     avatar: string,
-    firstName: string,
-    lastName: string
-  }
+    first_name: string,
+    last_name: string
+  },
+  refetch: () => void
 };
 
-export const CandidateComponent: FC<CandidateComponentProps> = ({candidate}) => {
-    const {activeUserInfo, addFriend } = useAppContext();
-    const [addFriendGQL, {}] = useMutation(ADD_FRIEND_MUTATION);
+export const CandidateComponent: FC<CandidateComponentProps> = ({candidate, refetch}) => {
+    const {activeUserInfo } = useAppContext();
+    const [addFriendGQL] = useMutation(ADD_FRIEND_MUTATION);
   
     return (
-        <View style={styles.candidate} key={candidate.id}>
+        <View style={styles.candidate} key={candidate._id}>
             <Image
                 source={{
                 uri: candidate.avatar
             }}
                 style={styles.ava}/>
-            <Text>{candidate.firstName} {candidate.lastName}</Text>
+            <Text>{candidate.first_name} {candidate.last_name}</Text>
             <TouchableOpacity
                 style={styles.chatBtn}
                 onPress={async() => {             
                   const res = await addFriendGQL({
                     variables: {
                       userId: activeUserInfo.id,
-                      newFriendId: candidate.id
+                      newFriendId: candidate._id
                     }
                   })
                   if(res.data.friends.addFriend.status === 'ok') {
-                    addFriend !({id: candidate.id, firstName: candidate.firstName, lastName: candidate.lastName, avatar: candidate.avatar});                    
+                    refetch()                 
                   } else {
                     Alert.alert("Error...", res.data.friends.addFriend.message)
                   }               

@@ -38,7 +38,7 @@ function MainNavigator() {
             [            
               { text: "OK", onPress: async () => {
                 nav.navigate('Home'); 
-                clearActiveUserInfo!(); 
+                // clearActiveUserInfo!(); 
                 clearUserPosts!();
                 clearAllUsers!();
                 clearNews!();

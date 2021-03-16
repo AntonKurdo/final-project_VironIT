@@ -10,9 +10,9 @@ export interface iUserData{
 }
 
 export interface iUser {
-  id: string,
-  firstName: string,
-  lastName: string,
+  _id: string,
+  first_name: string,
+  last_name: string,
   avatar: string
 }
 

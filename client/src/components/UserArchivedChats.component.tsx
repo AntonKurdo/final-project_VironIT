@@ -12,10 +12,12 @@ interface UserArchivedChatsComponentProps {
         firstName: string,
         lastName: string,
         chat_id: string
-    }
+    },
+    refetchPersonalChats: () => void,
+    refetchArchivedChats: () => void
 };
 
-export const UserArchivedChatsComponent : FC < UserArchivedChatsComponentProps > = ({chat}) => {
+export const UserArchivedChatsComponent : FC < UserArchivedChatsComponentProps > = ({chat, refetchPersonalChats, refetchArchivedChats}) => {
     const {activeUserInfo, unarchiveChat} = useAppContext();
     const [unarchiveChatGQL, {data}] = useMutation(UNARCHIVE_CHAT_MUTATION);
     return (
@@ -29,13 +31,15 @@ export const UserArchivedChatsComponent : FC < UserArchivedChatsComponentProps >
             <TouchableOpacity
                 style={styles.chatBtn}
                 onPress={async() => {
-                    unarchiveChatGQL({
+                    await unarchiveChatGQL({
                         variables: {
                             userId: activeUserInfo.id,
                             chatId: chat.chat_id
                         }
-                    })               
-                    unarchiveChat !(chat);                
+                    })   
+                    refetchPersonalChats();     
+                    refetchArchivedChats();       
+                    // unarchiveChat !(chat);                
             }}>
                 <MaterialIcons name="unarchive" size={30} color={THEME.MAIN_COLOR}/>
             </TouchableOpacity>

@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {StyleSheet, View, Text, ScrollView, ActivityIndicator} from 'react-native';
 import { PostComponent } from '../components/Post.component';
 import { useAppContext } from '../context/context';
@@ -19,7 +19,7 @@ const MyPosts = () => {
   navigation.addListener('focus', () => {
     refetch();
   })
-  
+
   if (loading) {
     return (
         <View style={styles.loadingContainer}>
@@ -43,7 +43,6 @@ const MyPosts = () => {
           )
         })
       }
-
     </ScrollView>
   )
 };

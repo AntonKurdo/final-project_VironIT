@@ -8,19 +8,21 @@ import { useMutation } from '@apollo/client';
 import { ARCHIVE_CHAT_MUTATION } from '../appollo/mutations/archiveChat';
 interface UserPersonalChatsComponentProps {
   chat: {
-    id: string,
+    _id: string,
     avatar: string,
     firstName: string,
     lastName: string,
     chat_id: string
-  }
+  },
+  refetchPersonalChats: () => void,
+  refetchArchivedChats: () => void
 };
 
-export const UserPersonalChatsComponent: FC<UserPersonalChatsComponentProps> = ({chat}) => {
+export const UserPersonalChatsComponent: FC<UserPersonalChatsComponentProps> = ({chat, refetchPersonalChats, refetchArchivedChats}) => {
   
     const navigation = useNavigation();
-    const {activeUserInfo, archiveChat} = useAppContext();
-    const [archiveChatGQL, {data}] = useMutation(ARCHIVE_CHAT_MUTATION);
+    const {activeUserInfo} = useAppContext();
+    const [archiveChatGQL] = useMutation(ARCHIVE_CHAT_MUTATION);
     return (
         <View style={styles.chat}>
             <Image
@@ -32,7 +34,7 @@ export const UserPersonalChatsComponent: FC<UserPersonalChatsComponentProps> = (
             <TouchableOpacity
                 style={styles.chatBtn}
                 onPress={() => navigation.navigate('Current chat', {
-                id: chat.id,
+                id: chat._id,
                 avatar: chat.avatar,
                 fullName: `${chat.firstName} ${chat.lastName}`
             })}>
@@ -41,13 +43,14 @@ export const UserPersonalChatsComponent: FC<UserPersonalChatsComponentProps> = (
             <TouchableOpacity
                 style={styles.archiveBtn}
                 onPress={async() => {
-                  archiveChatGQL({                  
+                  await archiveChatGQL({                  
                     variables: {
                       userId: activeUserInfo.id,
                       chatId: chat.chat_id
                   }
-                  })              
-                  archiveChat!(chat);
+                  })       
+                  refetchPersonalChats();
+                  refetchArchivedChats();
                 
             }}>
                 <MaterialIcons name="archive" size={30} color={THEME.MAIN_COLOR}/>

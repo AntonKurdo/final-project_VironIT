@@ -42,7 +42,7 @@ export const reducer = (state: any, action: any) => {
     return {...state, userPosts: newPosts, news: newNews}
 
     case SET_ALL_USERS: 
-      const UserWithoutActiveUser = action.allUsers.filter((user: any) => user.firstName + user.lastName !== state.activeUserInfo.firstName + state.activeUserInfo.lastName);
+      const UserWithoutActiveUser = action.allUsers.filter((user: any) => user.first_name + user.last_name !== state.activeUserInfo.firstName + state.activeUserInfo.lastName);
       return {...state, allUsers: UserWithoutActiveUser}
 
     case CLEAR_ALL_USERS: 

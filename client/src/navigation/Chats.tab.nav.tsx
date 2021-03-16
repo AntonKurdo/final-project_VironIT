@@ -7,11 +7,35 @@ import ArchivedChatsScreen from './../screens/ArchivedChats.screen';
 import AllChatsScreen from './../screens/AllChats.screen';
 
 import { THEME } from './../../theme';
+import { useAppContext } from '../context/context';
+import { useQuery } from '@apollo/client';
+import { GET_PERSONAL_CHATS_QUERY } from '../appollo/queries/getPersonalChats';
+import { GET_GROUP_CHATS_QUERY } from '../appollo/queries/getGroupChats';
+import { GET_ALL_ARCHIVED_CHATS_QUERY } from '../appollo/queries/getArchivedChats';
 
 
 const Tab = createBottomTabNavigator();
 
 function ChatsTabNav() {
+  const { activeUserInfo } = useAppContext();
+
+  const {data: personalChatsGQL, loading, refetch: refetchPersonalChats} = useQuery(GET_PERSONAL_CHATS_QUERY, {
+    variables: {
+      userId: activeUserInfo.id
+    }
+  });
+  
+  const {data: groupChatsGQL, refetch: refetchArchivedChats } = useQuery(GET_GROUP_CHATS_QUERY, {
+    variables: {
+      userId: activeUserInfo.id
+    }
+  });
+
+  const {data: archivedChatsGQL, loading: archivedChatsLoading} = useQuery(GET_ALL_ARCHIVED_CHATS_QUERY, {        
+    variables: {
+        userId: activeUserInfo.id
+    }
+});
 
   return (
     <Tab.Navigator
@@ -23,8 +47,8 @@ function ChatsTabNav() {
       }
     >
       <Tab.Screen 
-        name="Main Chats" 
-        component={AllChatsScreen} 
+        name="Main Chats"       
+        children={() => <AllChatsScreen personalChatsGQL={personalChatsGQL}  groupChatsGQL={groupChatsGQL}  refetchPersonalChats={refetchPersonalChats} refetchArchivedChats={refetchArchivedChats}/>}
         options={{                     
           tabBarIcon: ({color}) => (        
            <Entypo name="message" size={30} color={color} />
@@ -32,8 +56,8 @@ function ChatsTabNav() {
         }}
       />   
       <Tab.Screen 
-        name="Archived" 
-        component={ArchivedChatsScreen} 
+        name="Archived"         
+        children={() => <ArchivedChatsScreen archivedChatsGQL={archivedChatsGQL} loading={archivedChatsLoading} refetchPersonalChats={refetchPersonalChats}  refetchArchivedChats={refetchArchivedChats}  />}
         options={{                     
           tabBarIcon: ({color}) => (        
             <Entypo name="archive" size={30} color={color} />

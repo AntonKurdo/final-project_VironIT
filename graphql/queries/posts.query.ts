@@ -5,6 +5,7 @@ const { GraphQLObjectType,  GraphQLID, GraphQLList } = graphql;
 // TYPES 
 
 const PostType = require('../types/PostType');
+const NewsType = require('../types/NewsType');
 
 // MODELS
 const User = require('../../models/user.model');
@@ -29,7 +30,7 @@ const PostsQuery = new GraphQLObjectType({
       }
     },
     getNews: {
-      type: GraphQLList(PostType),
+      type: GraphQLList(NewsType),
       args: {userId: {type: GraphQLID}},
       async resolve(parent: any, args: any) {
         try {

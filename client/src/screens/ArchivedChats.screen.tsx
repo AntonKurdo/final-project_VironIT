@@ -1,12 +1,27 @@
-import React from 'react';
-import {StyleSheet, View, Text, ScrollView, Dimensions} from 'react-native';
-
+import React, {FC} from 'react';
+import {StyleSheet, View, Text, ScrollView, Dimensions, ActivityIndicator} from 'react-native';
 import {useAppContext} from './../context/context';
 import {UserArchivedChatsComponent} from '../components/UserArchivedChats.component';
+import {useQuery} from '@apollo/client';
+import {GET_ALL_ARCHIVED_CHATS_QUERY} from '../appollo/queries/getArchivedChats'
 
-const ArchivedChatsScreen = () => {
+interface props {
+    archivedChatsGQL: any,
+    loading: boolean,
+    refetchPersonalChats: () => void,
+    refetchArchivedChats: () => void
+}
 
-    const {userArchivedChats} = useAppContext();   
+const ArchivedChatsScreen: FC<props> = ({archivedChatsGQL, loading, refetchPersonalChats, refetchArchivedChats}) => {
+   
+    
+    if(loading) {
+        return (
+            <View style={styles.indicatorStyles}>
+                <ActivityIndicator />
+            </View>
+        )
+    }
 
     return (
         <View style={styles.default}>
@@ -16,17 +31,19 @@ const ArchivedChatsScreen = () => {
                 </Text>
             </View>
             <ScrollView style={styles.chatsWrapper}>
-                {userArchivedChats
-                    ?.length === 0
+                {archivedChatsGQL
+                    && archivedChatsGQL.chats
+                    && archivedChatsGQL.chats.getArchivedChatsById.length === 0
                         ? (
                             <View style={styles.emptyCont}>
                                 <Text style={styles.emptyText}>You have no any archived chats...</Text>
                             </View>
                         )
-                        : userArchivedChats !.map((chat : any) => {
-                            return (<UserArchivedChatsComponent chat={chat} key={chat.id}/>)
-                        })
-}
+                        : archivedChatsGQL
+                            && archivedChatsGQL.chats
+                            && archivedChatsGQL.chats.getArchivedChatsById.map((chat : any) => {
+                            return (<UserArchivedChatsComponent chat={chat} key={chat._id} refetchPersonalChats={refetchPersonalChats}  refetchArchivedChats={refetchArchivedChats} />)
+                        })}
             </ScrollView>
         </View>
     )
@@ -63,6 +80,12 @@ const styles = StyleSheet.create({
     emptyText: {
         color: 'lightgray',
         fontSize: 20
+    },
+    indicatorStyles: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fff'
     }
 })
 

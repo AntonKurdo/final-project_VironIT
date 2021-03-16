@@ -15,29 +15,30 @@ import { REMOVE_FRIEND_MUTATION } from '../appollo/mutations/removeFriend';
 import { ADD_PERSONAL_CHAT_MUTATION } from '../appollo/mutations/addNewPersonalChatToUser';
 interface FriendComponentProps {
   friend: {
-    id: string,
-    firstName: string,
-    lastName: string,
+    _id: string,
+    first_name: string,
+    last_name: string,
     avatar: string
-  }
+  },
+  refetch: () => void
 }
 
-export const FriendComponent: FC<FriendComponentProps> = ({friend}) => {
+export const FriendComponent: FC<FriendComponentProps> = ({friend, refetch}) => {
     
     const navigation = useNavigation();
-    const {activeUserInfo, removeFriend} = useAppContext();
+    const {activeUserInfo} = useAppContext();
 
-    const [removeFriendGQL, {data}] = useMutation(REMOVE_FRIEND_MUTATION);
-    const [addNewPersonalChatToUserGQL ] = useMutation(ADD_PERSONAL_CHAT_MUTATION);
+    const [removeFriendGQL] = useMutation(REMOVE_FRIEND_MUTATION);
+    const [addNewPersonalChatToUserGQL] = useMutation(ADD_PERSONAL_CHAT_MUTATION);
 
     return (
-        <View style={styles.candidate} key={friend.id}>
+        <View style={styles.candidate} key={friend._id}>
             <Image
                 source={{
                 uri: friend.avatar
             }}
                 style={styles.ava}/>
-            <Text>{friend.firstName} {friend.lastName}</Text>
+            <Text>{friend.first_name} {friend.last_name}</Text>
             <TouchableOpacity style={styles.chatBtn}>
                 <Menu>
                     <MenuTrigger>
@@ -49,13 +50,13 @@ export const FriendComponent: FC<FriendComponentProps> = ({friend}) => {
                                 addNewPersonalChatToUserGQL({
                                     variables: {
                                         userId: activeUserInfo.id,
-                                        secondUserId: friend.id
+                                        secondUserId: friend._id
                                     }
                                 })                          
                                 navigation.navigate('Current chat', {
-                                    id: friend.id,
+                                    id: friend._id,
                                     avatar: friend.avatar,
-                                    fullName: `${friend.firstName} ${friend.lastName}`
+                                    fullName: `${friend.first_name} ${friend.last_name}`
                                 })                            
                         }}>
                             <Text
@@ -66,13 +67,13 @@ export const FriendComponent: FC<FriendComponentProps> = ({friend}) => {
                         <MenuOption
                             onSelect={async() => {
                             try {                                                   
-                                removeFriendGQL({
+                                await removeFriendGQL({
                                     variables: {
                                         userId: activeUserInfo.id,
-                                        friendId: friend.id
+                                        friendId: friend._id
                                     }
-                                });                               
-                                removeFriend!(friend.id)
+                                });      
+                                refetch();                            
                             } catch (e) {
                                 console.log(e)
                             }

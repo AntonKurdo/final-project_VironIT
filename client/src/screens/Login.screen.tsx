@@ -17,8 +17,6 @@ import {THEME} from './../../theme';
 import {useAppContext} from '../context/context';
 import { socket } from './CurrentChat.screen';
 import firebase from 'firebase';
-import {useLazyQuery} from '@apollo/client';
-import { GET_ALL_USERS_QUERY } from '../appollo/queries/getAllUsers';
 
 const LoginScreen : FC = () => {
 
@@ -29,8 +27,6 @@ const LoginScreen : FC = () => {
     const navigation = useNavigation();
     const {setActiveUserInfo, getUserPosts, setAllUsers, setUserFriends, setNews, isLoading, setIsLoadingTrue, setIsLoadingFalse, setUserGroupChat, setUserPersonalChat, setUserArchivedChat} = useAppContext();
 
-    const [getAllUsersGQL, {data: allUsersData}] = useLazyQuery(GET_ALL_USERS_QUERY);
-
     const login = async () => {        
         Keyboard.dismiss();
         setIsLoadingTrue!();
@@ -40,15 +36,13 @@ const LoginScreen : FC = () => {
         if (typeof result !== 'boolean' && setActiveUserInfo) {
             await setActiveUserInfo(result);
             // const posts = await httpService.getAllUserPostsById(result.id);
-            // getUserPosts && getUserPosts(posts);
-            await getAllUsersGQL();
-            console.log(allUsersData);
+            // getUserPosts && getUserPosts(posts);                
             // setAllUsers!(allUsersData);                       
-            setUserFriends!(await httpService.getAllFriendsById(result.id)); 
+            // setUserFriends!(await httpService.getAllFriendsById(result.id)); 
             // setNews!(await httpService.getNews(result.id)); 
-            setUserPersonalChat!(await httpService.getAllChatsById(result.id));
-            setUserGroupChat!(await httpService.getGroupChatsById(result.id));
-            setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));
+            // setUserPersonalChat!(await httpService.getAllChatsById(result.id));
+            // setUserGroupChat!(await httpService.getGroupChatsById(result.id));
+            // setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));
             navigation.navigate('Profile');       
             socket.connect();     
             firebase
@@ -68,14 +62,14 @@ const LoginScreen : FC = () => {
       const result = await httpService.signUpWithGoogle();
       if (typeof result !== 'boolean' && setActiveUserInfo && result) {
           await setActiveUserInfo(result);
-          const posts = await httpService.getAllUserPostsById(result.id);
-          getUserPosts && getUserPosts(posts);
-          setAllUsers && setAllUsers(await httpService.getAllUsers());
-          setUserFriends!(await httpService.getAllFriendsById(result.id)); 
-          setNews!(await httpService.getNews(result.id));
-          setUserPersonalChat!(await httpService.getAllChatsById(result.id));
-          setUserGroupChat!(await httpService.getGroupChatsById(result.id));
-          setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));
+        //   const posts = await httpService.getAllUserPostsById(result.id);
+        //   getUserPosts && getUserPosts(posts);
+        //   setAllUsers && setAllUsers(await httpService.getAllUsers());
+        //   setUserFriends!(await httpService.getAllFriendsById(result.id)); 
+        //   setNews!(await httpService.getNews(result.id));
+        //   setUserPersonalChat!(await httpService.getAllChatsById(result.id));
+        //   setUserGroupChat!(await httpService.getGroupChatsById(result.id));
+        //   setUserArchivedChat!(await httpService.getAllArchivedChatsById(result.id));
           navigation.navigate('Profile'); 
           socket.connect();  
           firebase
@@ -102,6 +96,8 @@ const LoginScreen : FC = () => {
         <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
             <View style={styles.container}>
                 <TextInput
+                    autoCapitalize='none'
+                    autoCorrect={false}
                     placeholderTextColor={THEME.MAIN_COLOR}
                     placeholder='E-mail'
                     style={{

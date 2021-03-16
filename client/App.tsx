@@ -11,33 +11,33 @@ import { regusterForPushNotifications } from './src/services/getNotificationsPer
 Platform.OS === 'android' && LogBox.ignoreLogs(['Setting a timer']);
 
 const cache = new InMemoryCache({
-  typePolicies: {
-    Mutation: {
-      fields: {
-        friends: {
-          merge(existing, incoming) {
-            return { ...existing, ...incoming };
-          }
-        },
-        comments: {
-          merge(existing, incoming) {
-            return { ...existing, ...incoming };
-          }
-        },
-        posts: {
-          merge(existing, incoming) {
-            return { ...existing, ...incoming };
-          }
-        }
-      }
-    }  
-  }
+  // typePolicies: {
+  //   Mutation: {
+  //     fields: {
+  //       friends: {
+  //         merge(existing, incoming) {
+  //           return { ...existing, ...incoming };
+  //         }
+  //       },
+  //       comments: {
+  //         merge(existing, incoming) {
+  //           return { ...existing, ...incoming };
+  //         }
+  //       },
+  //       posts: {
+  //         merge(existing, incoming) {
+  //           return { ...existing, ...incoming };
+  //         }
+  //       }
+  //     }
+  //   }  
+  // }
 });
 
 const client = new ApolloClient({
-    uri: 'http://192.168.100.6:5000/graphql',  
+    uri: 'http://192.168.100.2:5000/graphql',  
     cache
-  });
+});
 
 const App: FC = () => {  
 

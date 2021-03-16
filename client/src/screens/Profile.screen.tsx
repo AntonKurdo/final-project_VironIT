@@ -1,16 +1,22 @@
 import React, {FC, useEffect} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Image, ActivityIndicator} from 'react-native';
 import {THEME} from './../../theme';
 import {iUser, useAppContext} from '../context/context';
 import {takeNewAvatar} from './../services/takeNewAvatar.service';
 import {Ionicons, MaterialIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
-import {useMutation} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import { CHANGE_AVATAR_MUTATION } from '../appollo/mutations/changeAva';
+import { GET_ALL_FRIENDS_QUERY } from '../appollo/queries/getAllFriends';
 
 const ProfileScreen : FC = () => {
     const {activeUserInfo, friends, changeAvatar, setIsLoadingFalse} = useAppContext();
     const navigation = useNavigation();
+    const {data: allFriendsGQL, loading } = useQuery(GET_ALL_FRIENDS_QUERY, {
+        variables: {
+          userId: activeUserInfo.id
+        }
+      });
 
     useEffect(() => {
         setTimeout(setIsLoadingFalse, 200)
@@ -74,27 +80,35 @@ const ProfileScreen : FC = () => {
                         Friends ({friends?.length}):
                     </Text>
                 </View>
-                <View                   
-                  style={styles.friendsBody}>
-                    {friends !.map((friend : iUser) => {
-                        return (
-                            <View key={friend.id} style={styles.friend}>
-                                <Image
-                                    source={{
-                                    uri: friend.avatar
-                                }}
-                                    style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: 25
-                                }}/>
-                                <Text style={styles.friendText}>{friend.firstName}</Text>
-                                <Text style={styles.friendText}>{friend.lastName}</Text>
-                            </View>
-                        )
-                    })
-}
-                </View>
+                {
+                    loading 
+                        ? <View>
+                            <ActivityIndicator size='large' color={THEME.MAIN_COLOR} />
+                          </View>
+                        : <View                   
+                        style={styles.friendsBody}>
+                          {allFriendsGQL
+                              && allFriendsGQL.friends.getAllFriendsByUserId
+                              && allFriendsGQL.friends.getAllFriendsByUserId.map((friend : iUser) => {
+                              return (
+                                  <View key={friend._id} style={styles.friend}>
+                                      <Image
+                                          source={{
+                                          uri: friend.avatar
+                                      }}
+                                          style={{
+                                          width: 50,
+                                          height: 50,
+                                          borderRadius: 25
+                                      }}/>
+                                      <Text style={styles.friendText}>{friend.first_name}</Text>
+                                      <Text style={styles.friendText}>{friend.last_name}</Text>
+                                  </View>
+                              )
+                          })
+      }
+                      </View>
+                }
             </View>
         </View>
     )
